@@ -325,3 +325,46 @@ function PayDialog({ debt, userId, onDone }: { debt: DebtRow; userId: string; on
     </DialogContent>
   );
 }
+
+function DebtPayoffPlanner({
+  debt,
+}: {
+  debt: { id: string; name: string; balance: number; apr: number; minimum_payment: number };
+}) {
+  const [extra, setExtra] = useState(0);
+  const maxExtra = Math.max(100, Math.round(debt.minimum_payment * 4));
+
+  return (
+    <div className="mt-5 pt-5 border-t border-border/60 space-y-4">
+      <div className="flex items-baseline justify-between flex-wrap gap-2">
+        <Label htmlFor={`extra-${debt.id}`} className="text-xs uppercase tracking-[0.18em] text-brass">
+          Extra paid per month
+        </Label>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground">$</span>
+          <Input
+            id={`extra-${debt.id}`}
+            type="number"
+            min={0}
+            step={10}
+            value={extra}
+            onChange={(e) => setExtra(Math.max(0, Number(e.target.value) || 0))}
+            className="h-8 w-24 text-right font-serif"
+          />
+        </div>
+      </div>
+      <Slider
+        value={[Math.min(extra, maxExtra)]}
+        min={0}
+        max={maxExtra}
+        step={10}
+        onValueChange={(v) => setExtra(v[0] ?? 0)}
+      />
+      <div className="flex justify-between text-[10px] text-muted-foreground">
+        <span>$0</span>
+        <span>{formatMoney(maxExtra)}</span>
+      </div>
+      <DebtPayoffChart debt={debt} extraPerMonth={extra} />
+    </div>
+  );
+}
