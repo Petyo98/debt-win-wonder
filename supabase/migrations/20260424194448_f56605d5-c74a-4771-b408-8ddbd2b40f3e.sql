@@ -1,0 +1,1 @@
+ALTER TABLE public.debts ADD COLUMN extra_payment numeric NOT NULL DEFAULT 0;
