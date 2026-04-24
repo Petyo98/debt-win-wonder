@@ -49,6 +49,15 @@ function DebtsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-paper flex items-center justify-center">
+        <div className="font-serif text-muted-foreground italic">Opening your ledger…</div>
+      </div>
+    );
+  }
+
+
   async function load() {
     setLoading(true);
     const { data, error } = await supabase
