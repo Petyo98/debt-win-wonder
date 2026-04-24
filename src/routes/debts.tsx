@@ -165,6 +165,7 @@ function DebtsPage() {
                       apr: d.apr,
                       minimum_payment: d.minimum_payment,
                     }}
+                    initialExtra={d.extra_payment}
                   />
                 </Card>
               );
