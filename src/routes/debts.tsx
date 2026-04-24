@@ -155,7 +155,7 @@ function DebtsPage() {
                     />
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">{Math.round(progress)}% paid off</p>
-                  <DebtPayoffChart
+                  <DebtPayoffPlanner
                     debt={{
                       id: d.id,
                       name: d.name,
