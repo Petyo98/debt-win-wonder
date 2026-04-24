@@ -59,11 +59,12 @@ function DebtsPage() {
 
 
   async function load() {
+    if (!user) return;
     setLoading(true);
     const { data, error } = await supabase
       .from("debts")
       .select("*")
-      .eq("user_id", user!.id)
+      .eq("user_id", user.id)
       .order("is_paid_off")
       .order("balance");
     if (error) toast.error(error.message);
