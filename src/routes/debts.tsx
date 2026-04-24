@@ -10,9 +10,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { formatMoneyDetailed } from "@/lib/finance";
+import { formatMoney, formatMoneyDetailed } from "@/lib/finance";
 import { Trash2 } from "lucide-react";
 import { DebtPayoffChart } from "@/components/DebtPayoffChart";
+import { Slider } from "@/components/ui/slider";
 
 export const Route = createFileRoute("/debts")({
   head: () => ({
