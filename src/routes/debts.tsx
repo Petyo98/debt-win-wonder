@@ -331,17 +331,40 @@ function PayDialog({ debt, userId, onDone }: { debt: DebtRow; userId: string; on
 
 function DebtPayoffPlanner({
   debt,
+  initialExtra = 0,
 }: {
   debt: { id: string; name: string; balance: number; apr: number; minimum_payment: number };
+  initialExtra?: number;
 }) {
-  const [extra, setExtra] = useState(0);
+  const [extra, setExtra] = useState(initialExtra);
+  const [saving, setSaving] = useState(false);
   const maxExtra = Math.max(100, Math.round(debt.minimum_payment * 4));
+
+  // Sync when the persisted value changes (e.g. after reload)
+  useEffect(() => {
+    setExtra(initialExtra);
+  }, [initialExtra, debt.id]);
+
+  // Debounced persistence
+  useEffect(() => {
+    if (extra === initialExtra) return;
+    const t = setTimeout(async () => {
+      setSaving(true);
+      const { error } = await supabase
+        .from("debts")
+        .update({ extra_payment: extra })
+        .eq("id", debt.id);
+      setSaving(false);
+      if (error) toast.error(`Couldn't save extra payment: ${error.message}`);
+    }, 600);
+    return () => clearTimeout(t);
+  }, [extra, initialExtra, debt.id]);
 
   return (
     <div className="mt-5 pt-5 border-t border-border/60 space-y-4">
       <div className="flex items-baseline justify-between flex-wrap gap-2">
         <Label htmlFor={`extra-${debt.id}`} className="text-xs uppercase tracking-[0.18em] text-brass">
-          Extra paid per month
+          Extra paid per month {saving && <span className="ml-2 text-muted-foreground normal-case tracking-normal italic">saving…</span>}
         </Label>
         <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground">$</span>
