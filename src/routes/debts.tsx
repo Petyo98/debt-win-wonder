@@ -78,6 +78,7 @@ function DebtsPage() {
         apr: Number(d.apr),
         minimum_payment: Number(d.minimum_payment),
         starting_balance: Number(d.starting_balance),
+        extra_payment: Number((d as { extra_payment?: number }).extra_payment ?? 0),
       })) as DebtRow[]
     );
     setLoading(false);
