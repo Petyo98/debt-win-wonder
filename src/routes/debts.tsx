@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { toast } from "sonner";
 import { formatMoneyDetailed } from "@/lib/finance";
 import { Trash2 } from "lucide-react";
+import { DebtPayoffChart } from "@/components/DebtPayoffChart";
 
 export const Route = createFileRoute("/debts")({
   head: () => ({
@@ -153,6 +154,15 @@ function DebtsPage() {
                     />
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">{Math.round(progress)}% paid off</p>
+                  <DebtPayoffChart
+                    debt={{
+                      id: d.id,
+                      name: d.name,
+                      balance: d.balance,
+                      apr: d.apr,
+                      minimum_payment: d.minimum_payment,
+                    }}
+                  />
                 </Card>
               );
             })}
