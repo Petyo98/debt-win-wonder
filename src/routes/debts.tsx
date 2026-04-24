@@ -37,6 +37,7 @@ type DebtRow = {
   minimum_payment: number;
   starting_balance: number;
   is_paid_off: boolean;
+  extra_payment: number;
 };
 
 function DebtsPage() {
