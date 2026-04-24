@@ -46,6 +46,7 @@ export type Database = {
           apr: number
           balance: number
           created_at: string
+          extra_payment: number
           id: string
           is_paid_off: boolean
           minimum_payment: number
@@ -58,6 +59,7 @@ export type Database = {
           apr?: number
           balance: number
           created_at?: string
+          extra_payment?: number
           id?: string
           is_paid_off?: boolean
           minimum_payment?: number
@@ -70,6 +72,7 @@ export type Database = {
           apr?: number
           balance?: number
           created_at?: string
+          extra_payment?: number
           id?: string
           is_paid_off?: boolean
           minimum_payment?: number
