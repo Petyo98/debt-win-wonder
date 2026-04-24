@@ -192,10 +192,18 @@ function AddDebtDialog({ userId, onAdded }: { userId: string; onAdded: () => voi
   const [minPay, setMinPay] = useState("");
   const [busy, setBusy] = useState(false);
 
+  function resetForm() {
+    setName("");
+    setBalance("");
+    setApr("");
+    setMinPay("");
+  }
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     const bal = Number(balance);
+    const debtName = name;
     const { error } = await supabase.from("debts").insert({
       user_id: userId,
       name,
@@ -206,7 +214,10 @@ function AddDebtDialog({ userId, onAdded }: { userId: string; onAdded: () => voi
     });
     setBusy(false);
     if (error) return toast.error(error.message);
-    toast.success("Debt added to your ledger");
+    toast.success(`${debtName} added to your ledger`, {
+      description: `${formatMoneyDetailed(bal)} at ${apr}% APR is now being tracked.`,
+    });
+    resetForm();
     onAdded();
   }
 
