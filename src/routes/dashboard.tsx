@@ -1,14 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { SiteHeader } from "@/components/SiteHeader";
+import { AppShell } from "@/components/AppShell";
 import { RequireAuth } from "@/components/RequireAuth";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import {
   type Debt,
@@ -21,17 +19,20 @@ import {
   totalBalance,
   totalMinimums,
 } from "@/lib/finance";
+import { Flame, CheckCircle2, ArrowRight, Plus, Sparkles, Trophy } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
     meta: [
-      { title: "Dashboard · Ledger" },
+      { title: "Home · DebtFree" },
       { name: "description", content: "Your daily debt-payoff dashboard." },
     ],
   }),
   component: () => (
     <RequireAuth>
-      <Dashboard />
+      <AppShell>
+        <Dashboard />
+      </AppShell>
     </RequireAuth>
   ),
 });
@@ -53,10 +54,7 @@ function Dashboard() {
   const todayKey = new Date().toISOString().slice(0, 10);
   const todayAction = useMemo(() => actionForDate(new Date()), []);
   const checkedInToday = checkins.some((c) => c.checkin_date === todayKey);
-  const streak = useMemo(
-    () => calculateStreak(checkins.map((c) => c.checkin_date)),
-    [checkins]
-  );
+  const streak = useMemo(() => calculateStreak(checkins.map((c) => c.checkin_date)), [checkins]);
 
   useEffect(() => {
     if (!user) return;
@@ -76,17 +74,33 @@ function Dashboard() {
     setProfile(
       (prof as Profile) ?? { display_name: user!.email?.split("@")[0] ?? null, preferred_strategy: "snowball" }
     );
-    setDebts((debtRows ?? []).map((d) => ({
-      id: d.id,
-      name: d.name,
-      balance: Number(d.balance),
-      apr: Number(d.apr),
-      minimum_payment: Number(d.minimum_payment),
-    })));
+    setDebts(
+      (debtRows ?? []).map((d) => ({
+        id: d.id,
+        name: d.name,
+        balance: Number(d.balance),
+        apr: Number(d.apr),
+        minimum_payment: Number(d.minimum_payment),
+      }))
+    );
     setCheckins((ciRows ?? []) as Checkin[]);
     setPaidOffCount(paidCount ?? 0);
     setLoading(false);
   }
+
+  // Total starting balance for progress bar
+  const [startingTotal, setStartingTotal] = useState(0);
+  useEffect(() => {
+    if (!user) return;
+    void supabase
+      .from("debts")
+      .select("starting_balance")
+      .eq("user_id", user.id)
+      .then(({ data }) => {
+        const total = (data ?? []).reduce((s, d) => s + Number(d.starting_balance), 0);
+        setStartingTotal(total);
+      });
+  }, [user, debts.length]);
 
   const minSum = totalMinimums(debts);
   const balanceSum = totalBalance(debts);
@@ -95,13 +109,7 @@ function Dashboard() {
     () => project(debts, monthlyBudget, profile?.preferred_strategy ?? "snowball"),
     [debts, monthlyBudget, profile]
   );
-  const focusDebt = useMemo(() => {
-    if (debts.length === 0) return null;
-    if (profile?.preferred_strategy === "avalanche") {
-      return [...debts].sort((a, b) => b.apr - a.apr)[0];
-    }
-    return [...debts].sort((a, b) => a.balance - b.balance)[0];
-  }, [debts, profile]);
+  const progressPct = startingTotal > 0 ? Math.min(100, Math.max(0, ((startingTotal - balanceSum) / startingTotal) * 100)) : 0;
 
   async function handleCheckin() {
     if (!user) return;
@@ -127,14 +135,7 @@ function Dashboard() {
   }
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-paper">
-        <SiteHeader />
-        <div className="mx-auto max-w-6xl px-6 py-20 font-serif italic text-muted-foreground">
-          Reading your entries…
-        </div>
-      </div>
-    );
+    return <div className="px-5 pt-10 text-muted-foreground">Loading…</div>;
   }
 
   const greeting = (() => {
@@ -144,155 +145,210 @@ function Dashboard() {
     return "Good evening";
   })();
 
+  const motivation = motivationFor(streak, paidOffCount, balanceSum);
+
   return (
-    <div className="min-h-screen bg-paper">
-      <SiteHeader />
-      <main className="mx-auto max-w-6xl px-6 py-12 md:py-16 space-y-12">
-        {/* Greeting */}
+    <div className="px-5 pt-6 pb-6 space-y-5">
+      {/* Greeting */}
+      <header className="flex items-center justify-between">
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-brass mb-3">Today · {new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}</p>
-          <h1 className="font-serif text-4xl md:text-5xl tracking-tight">
-            {greeting}, {profile?.display_name ?? "friend"}.
+          <p className="text-xs text-muted-foreground">{greeting},</p>
+          <h1 className="font-display text-2xl font-extrabold tracking-tight">
+            {profile?.display_name ?? "friend"} 👋
           </h1>
         </div>
+        <div className="flex items-center gap-1.5 rounded-full bg-warning/15 text-warning-foreground px-3 py-1.5">
+          <Flame className="h-4 w-4 text-warning" />
+          <span className="font-bold text-sm">{streak}</span>
+        </div>
+      </header>
 
-        {debts.length === 0 ? (
-          <Card className="p-10 text-center bg-card border-border/60 rounded-sm shadow-paper">
-            <h2 className="font-serif text-2xl mb-3">Your ledger is empty.</h2>
-            <p className="text-muted-foreground mb-6">Add your first debt to begin the practice.</p>
-            <Link to="/debts">
-              <Button>Add your first debt</Button>
-            </Link>
-          </Card>
-        ) : (
-          <>
-            {/* Top stats */}
-            <div className="grid md:grid-cols-3 gap-6">
-              <StatCard label="Total balance" value={formatMoney(balanceSum)} />
-              <StatCard
-                label="Debt-free by"
-                value={projection.payoffDate.toLocaleDateString(undefined, { month: "short", year: "numeric" })}
-                hint={`${projection.monthsToFreedom} months`}
-              />
-              <StatCard label="Current streak" value={`${streak} ${streak === 1 ? "day" : "days"}`} hint={`${paidOffCount} debt${paidOffCount === 1 ? "" : "s"} paid off`} />
-            </div>
+      {/* Empty state */}
+      {debts.length === 0 ? (
+        <div className="rounded-3xl bg-surface border border-border p-6 text-center">
+          <div className="h-16 w-16 mx-auto rounded-2xl bg-primary-soft text-primary grid place-items-center">
+            <Sparkles className="h-7 w-7" />
+          </div>
+          <h2 className="font-display font-bold text-xl mt-4">Let's get started</h2>
+          <p className="text-sm text-muted-foreground mt-2">
+            Add your first debt to see your debt-free date and unlock your daily action.
+          </p>
+          <Link to="/debts" className="block mt-5">
+            <Button className="w-full rounded-2xl h-12 font-semibold">
+              <Plus className="h-4 w-4" /> Add your first debt
+            </Button>
+          </Link>
+        </div>
+      ) : (
+        <>
+          {/* Hero progress card */}
+          <div className="relative rounded-3xl p-6 bg-foreground text-background overflow-hidden">
+            <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary/40 blur-3xl" />
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary">Debt-free by</p>
+            <p className="font-display text-4xl font-extrabold mt-1">
+              {projection.payoffDate.toLocaleDateString(undefined, { month: "short", year: "numeric" })}
+            </p>
+            <p className="text-sm opacity-70 mt-1">
+              {projection.monthsToFreedom} months · {formatMoney(balanceSum)} to go
+            </p>
 
-            {/* Today's action */}
-            <Card className="p-8 md:p-10 bg-card border-border/60 rounded-sm shadow-paper">
-              <div className="flex flex-col md:flex-row md:items-start gap-8">
-                <div className="flex-1 space-y-4">
-                  <p className="text-xs uppercase tracking-[0.2em] text-brass">Today's action</p>
-                  <h2 className="font-serif text-3xl md:text-4xl tracking-tight">{todayAction.title}</h2>
-                  <p className="text-muted-foreground leading-relaxed max-w-xl">{todayAction.description}</p>
-                </div>
-                <div className="md:w-64 space-y-3">
-                  {checkedInToday ? (
-                    <div className="rounded-sm border border-success/40 bg-success/10 p-4 text-center">
-                      <p className="font-serif text-success text-lg">✓ Logged for today</p>
-                      <p className="text-sm text-muted-foreground mt-1">Streak: {streak} days</p>
-                    </div>
-                  ) : (
-                    <>
-                      <Label htmlFor="saved" className="text-xs uppercase tracking-widest">Amount saved (optional)</Label>
-                      <Input
-                        id="saved"
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        placeholder="$"
-                        value={savedAmount}
-                        onChange={(e) => setSavedAmount(e.target.value)}
-                      />
-                      <Button onClick={handleCheckin} disabled={submittingCheckin} className="w-full">
-                        {submittingCheckin ? "Logging…" : "Log today's action"}
-                      </Button>
-                    </>
-                  )}
-                </div>
+            <div className="mt-5">
+              <div className="flex justify-between text-xs opacity-70 mb-2">
+                <span>Progress</span>
+                <span>{Math.round(progressPct)}%</span>
               </div>
-            </Card>
+              <div className="h-2 rounded-full bg-background/15 overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-primary transition-all"
+                  style={{ width: `${progressPct}%` }}
+                />
+              </div>
+            </div>
+          </div>
 
-            {/* Focus debt */}
-            {focusDebt && (
-              <Card className="p-8 bg-card border-border/60 rounded-sm shadow-paper">
-                <div className="flex items-start justify-between gap-6 flex-wrap">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-brass mb-2">Focus debt · {profile?.preferred_strategy}</p>
-                    <h3 className="font-serif text-2xl">{focusDebt.name}</h3>
-                    <p className="text-muted-foreground mt-1">
-                      {formatMoneyDetailed(focusDebt.balance)} remaining · {focusDebt.apr}% APR
-                    </p>
-                  </div>
-                  <Link to="/debts">
-                    <Button variant="outline">Log a payment →</Button>
-                  </Link>
+          {/* Stat tiles */}
+          <div className="grid grid-cols-2 gap-3">
+            <Tile label="Total debt" value={formatMoney(balanceSum)} />
+            <Tile label="Paid off" value={`${paidOffCount}`} hint="debts cleared" />
+          </div>
+
+          {/* Daily action */}
+          <div className="rounded-3xl bg-primary-soft p-5">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                Today's action
+              </p>
+              {checkedInToday && (
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-primary">
+                  <CheckCircle2 className="h-3 w-3" /> DONE
+                </span>
+              )}
+            </div>
+            <h2 className="font-display text-xl font-bold tracking-tight">{todayAction.title}</h2>
+            <p className="text-sm text-foreground/70 mt-2 leading-relaxed">{todayAction.description}</p>
+
+            {checkedInToday ? (
+              <div className="mt-4 rounded-2xl bg-surface/70 p-3 text-center text-sm text-foreground/70">
+                Streak: <span className="font-bold text-primary">{streak} days</span> 🔥
+              </div>
+            ) : (
+              <div className="mt-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="saved" className="sr-only">
+                    Amount saved
+                  </Label>
+                  <Input
+                    id="saved"
+                    type="number"
+                    inputMode="decimal"
+                    placeholder="$ Saved (optional)"
+                    value={savedAmount}
+                    onChange={(e) => setSavedAmount(e.target.value)}
+                    className="h-12 rounded-2xl bg-surface border-transparent text-base"
+                  />
                 </div>
-              </Card>
+                <Button
+                  onClick={handleCheckin}
+                  disabled={submittingCheckin}
+                  className="w-full h-12 rounded-2xl font-semibold"
+                >
+                  {submittingCheckin ? "Saving…" : "Mark today complete"}
+                </Button>
+              </div>
             )}
+          </div>
 
-            {/* Projection sliders */}
-            <Card className="p-8 bg-card border-border/60 rounded-sm shadow-paper space-y-6">
+          {/* Motivation */}
+          <div className="rounded-3xl border border-border bg-surface p-5 flex items-start gap-3">
+            <div className="h-10 w-10 shrink-0 rounded-xl bg-success/15 text-success grid place-items-center">
+              <Trophy className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-success">
+                Coach
+              </p>
+              <p className="font-medium leading-snug mt-1">{motivation}</p>
+            </div>
+          </div>
+
+          {/* Plan adjustment */}
+          <div className="rounded-3xl border border-border bg-surface p-5">
+            <div className="flex items-center justify-between mb-1">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Tweak your plan</p>
+              <Link to="/strategy" className="text-xs font-semibold text-primary inline-flex items-center gap-1">
+                Compare <ArrowRight className="h-3 w-3" />
+              </Link>
+            </div>
+            <p className="font-display text-xl font-bold mt-1">
+              Pay {formatMoney(monthlyBudget)} / month
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Min {formatMoney(minSum)} + extra {formatMoney(extraBudget)}
+            </p>
+
+            <input
+              type="range"
+              min={0}
+              max={Math.max(500, Math.round(minSum * 2))}
+              step={25}
+              value={extraBudget}
+              onChange={(e) => setExtraBudget(Number(e.target.value))}
+              className="w-full mt-4 accent-[var(--primary)]"
+            />
+
+            <div className="grid grid-cols-2 gap-3 mt-4">
+              <Mini label="Months" value={String(projection.monthsToFreedom)} />
+              <Mini label="Interest" value={formatMoney(projection.totalInterest)} />
+            </div>
+          </div>
+
+          {/* Debts shortcut */}
+          <Link
+            to="/debts"
+            className="block rounded-3xl bg-surface border border-border p-5 active:scale-[0.99] transition-transform"
+          >
+            <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-brass mb-2">The plan</p>
-                <h3 className="font-serif text-2xl mb-1">If you pay {formatMoney(monthlyBudget)} a month…</h3>
-                <p className="text-muted-foreground text-sm">
-                  Minimums: {formatMoney(minSum)} · Extra: {formatMoney(extraBudget)}
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                  Your debts
+                </p>
+                <p className="font-display text-lg font-bold mt-0.5">
+                  {debts.length} active · {formatMoneyDetailed(balanceSum)}
                 </p>
               </div>
-
-              <div>
-                <Label className="text-xs uppercase tracking-widest mb-3 block">Add extra each month</Label>
-                <input
-                  type="range"
-                  min={0}
-                  max={Math.max(500, Math.round(minSum * 2))}
-                  step={25}
-                  value={extraBudget}
-                  onChange={(e) => setExtraBudget(Number(e.target.value))}
-                  className="w-full accent-[var(--brass)]"
-                />
-                <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                  <span>$0</span>
-                  <span>{formatMoney(Math.max(500, Math.round(minSum * 2)))}</span>
-                </div>
-              </div>
-
-              <div className="grid sm:grid-cols-3 gap-4 pt-2">
-                <Mini label="Months to freedom" value={String(projection.monthsToFreedom)} />
-                <Mini label="Total interest" value={formatMoney(projection.totalInterest)} />
-                <Mini label="Debt-free date" value={projection.payoffDate.toLocaleDateString(undefined, { month: "short", year: "numeric" })} />
-              </div>
-
-              <div>
-                <div className="flex justify-between text-xs text-muted-foreground mb-2">
-                  <span>Progress toward zero</span>
-                  <span>{Math.round((1 - balanceSum / Math.max(balanceSum, 1)) * 100)}%</span>
-                </div>
-                <Progress value={paidOffCount > 0 ? 10 : 0} className="h-1" />
-              </div>
-            </Card>
-          </>
-        )}
-      </main>
+              <ArrowRight className="h-5 w-5 text-muted-foreground" />
+            </div>
+          </Link>
+        </>
+      )}
     </div>
   );
 }
 
-function StatCard({ label, value, hint }: { label: string; value: string; hint?: string }) {
+function Tile({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
-    <Card className="p-6 bg-card border-border/60 rounded-sm">
-      <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-2">{label}</p>
-      <p className="font-serif text-3xl tracking-tight">{value}</p>
-      {hint && <p className="text-sm text-muted-foreground mt-1">{hint}</p>}
-    </Card>
+    <div className="rounded-2xl bg-surface border border-border p-4">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{label}</p>
+      <p className="font-display text-2xl font-extrabold mt-1">{value}</p>
+      {hint && <p className="text-[11px] text-muted-foreground mt-0.5">{hint}</p>}
+    </div>
   );
 }
 
 function Mini({ label, value }: { label: string; value: string }) {
   return (
-    <div className="border-l-2 border-brass pl-4">
-      <p className="text-xs uppercase tracking-widest text-muted-foreground mb-1">{label}</p>
-      <p className="font-serif text-2xl">{value}</p>
+    <div className="rounded-2xl bg-muted/60 p-3">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{label}</p>
+      <p className="font-display text-lg font-bold mt-0.5">{value}</p>
     </div>
   );
+}
+
+function motivationFor(streak: number, paid: number, balance: number): string {
+  if (paid > 0 && streak >= 7) return `${paid} debt${paid > 1 ? "s" : ""} crushed and a ${streak}-day streak. You're unstoppable.`;
+  if (streak >= 7) return `${streak} days in a row. This is what compound momentum feels like.`;
+  if (streak >= 3) return `Day ${streak}. The hardest part is starting — and you've already started.`;
+  if (paid > 0) return `One down. Each payoff makes the next one faster.`;
+  if (balance > 0) return `Small actions, repeated daily, change everything. Take today's action.`;
+  return `You're building the habits that set future-you free.`;
 }
