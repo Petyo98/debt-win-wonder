@@ -1,30 +1,38 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { SiteHeader } from "@/components/SiteHeader";
+import { AppShell } from "@/components/AppShell";
 import { RequireAuth } from "@/components/RequireAuth";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { formatMoney, formatMoneyDetailed } from "@/lib/finance";
-import { Trash2 } from "lucide-react";
+import { Trash2, Plus, CheckCircle2 } from "lucide-react";
 import { DebtPayoffChart } from "@/components/DebtPayoffChart";
 import { Slider } from "@/components/ui/slider";
 
 export const Route = createFileRoute("/debts")({
   head: () => ({
     meta: [
-      { title: "Debts · Ledger" },
+      { title: "Debts · DebtFree" },
       { name: "description", content: "Track every debt and log payments." },
     ],
   }),
   component: () => (
     <RequireAuth>
-      <DebtsPage />
+      <AppShell>
+        <DebtsPage />
+      </AppShell>
     </RequireAuth>
   ),
 });
@@ -51,15 +59,6 @@ function DebtsPage() {
     if (user) void load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
-
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-paper flex items-center justify-center">
-        <div className="font-serif text-muted-foreground italic">Opening your ledger…</div>
-      </div>
-    );
-  }
-
 
   async function load() {
     if (!user) return;
@@ -91,113 +90,140 @@ function DebtsPage() {
     void load();
   }
 
+  if (!user) return null;
+
   const active = debts.filter((d) => !d.is_paid_off);
   const paid = debts.filter((d) => d.is_paid_off);
 
   return (
-    <div className="min-h-screen bg-paper">
-      <SiteHeader />
-      <main className="mx-auto max-w-6xl px-6 py-12 md:py-16 space-y-10">
-        <div className="flex items-end justify-between flex-wrap gap-4">
-          <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-brass mb-2">The book</p>
-            <h1 className="font-serif text-4xl md:text-5xl tracking-tight">Your debts</h1>
-          </div>
-          <Dialog open={openAdd} onOpenChange={setOpenAdd}>
-            <DialogTrigger asChild>
-              <Button>+ Add debt</Button>
-            </DialogTrigger>
-            <AddDebtDialog
-              userId={user!.id}
-              onAdded={() => {
-                setOpenAdd(false);
-                void load();
-              }}
-            />
-          </Dialog>
+    <div className="px-5 pt-6 pb-6 space-y-5">
+      <header className="flex items-end justify-between">
+        <div>
+          <p className="text-xs text-muted-foreground">Your portfolio</p>
+          <h1 className="font-display text-2xl font-extrabold tracking-tight">Debts</h1>
         </div>
+        <Dialog open={openAdd} onOpenChange={setOpenAdd}>
+          <DialogTrigger asChild>
+            <Button size="sm" className="rounded-full h-10 px-4 font-semibold shadow-soft">
+              <Plus className="h-4 w-4" /> Add
+            </Button>
+          </DialogTrigger>
+          <AddDebtDialog
+            userId={user.id}
+            onAdded={() => {
+              setOpenAdd(false);
+              void load();
+            }}
+          />
+        </Dialog>
+      </header>
 
-        {loading ? (
-          <p className="font-serif italic text-muted-foreground">Reading your entries…</p>
-        ) : debts.length === 0 ? (
-          <Card className="p-10 text-center bg-card border-border/60 rounded-sm">
-            <h2 className="font-serif text-2xl mb-2">No entries yet.</h2>
-            <p className="text-muted-foreground">Add your first debt to begin.</p>
-          </Card>
-        ) : (
-          <div className="space-y-4">
-            {active.map((d) => {
-              const progress = ((d.starting_balance - d.balance) / Math.max(d.starting_balance, 1)) * 100;
-              return (
-                <Card key={d.id} className="p-6 bg-card border-border/60 rounded-sm">
-                  <div className="flex items-start justify-between gap-4 flex-wrap">
-                    <div className="flex-1 min-w-[200px]">
-                      <h3 className="font-serif text-xl">{d.name}</h3>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {d.apr}% APR · Min {formatMoneyDetailed(d.minimum_payment)}
+      {loading ? (
+        <p className="text-muted-foreground">Loading…</p>
+      ) : debts.length === 0 ? (
+        <div className="rounded-3xl bg-surface border border-border p-8 text-center">
+          <h2 className="font-display font-bold text-xl">Nothing tracked yet</h2>
+          <p className="text-sm text-muted-foreground mt-2">
+            Add your first debt to start your countdown.
+          </p>
+          <Button onClick={() => setOpenAdd(true)} className="mt-5 rounded-2xl h-12 font-semibold w-full">
+            <Plus className="h-4 w-4" /> Add a debt
+          </Button>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {active.map((d) => {
+            const progress =
+              ((d.starting_balance - d.balance) / Math.max(d.starting_balance, 1)) * 100;
+            return (
+              <div key={d.id} className="rounded-3xl bg-surface border border-border p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="font-display font-bold text-lg leading-tight">{d.name}</h3>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {d.apr}% APR · Min {formatMoney(d.minimum_payment)}/mo
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => deleteDebt(d.id)}
+                    aria-label="Delete debt"
+                    className="h-9 w-9 rounded-full grid place-items-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+
+                <div className="mt-4 flex items-baseline justify-between">
+                  <p className="font-display text-3xl font-extrabold tracking-tight">
+                    {formatMoneyDetailed(d.balance)}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    of {formatMoney(d.starting_balance)}
+                  </p>
+                </div>
+
+                <div className="mt-3 h-2 rounded-full bg-muted overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-primary transition-all"
+                    style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
+                  />
+                </div>
+                <p className="text-[11px] text-muted-foreground mt-1.5">
+                  {Math.round(progress)}% paid off
+                </p>
+
+                <Button
+                  onClick={() => setPayingDebt(d)}
+                  className="mt-4 w-full rounded-2xl h-11 font-semibold"
+                >
+                  Log payment
+                </Button>
+
+                <DebtPayoffPlanner
+                  debt={{
+                    id: d.id,
+                    name: d.name,
+                    balance: d.balance,
+                    apr: d.apr,
+                    minimum_payment: d.minimum_payment,
+                  }}
+                  initialExtra={d.extra_payment}
+                />
+              </div>
+            );
+          })}
+
+          {paid.length > 0 && (
+            <div className="pt-4">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-success mb-3">
+                Paid off · {paid.length}
+              </p>
+              <div className="space-y-3">
+                {paid.map((d) => (
+                  <div
+                    key={d.id}
+                    className="rounded-2xl bg-success/10 border border-success/30 p-4 flex items-center justify-between"
+                  >
+                    <div>
+                      <h3 className="font-display font-bold">{d.name}</h3>
+                      <p className="text-xs text-muted-foreground">
+                        Cleared {formatMoneyDetailed(d.starting_balance)}
                       </p>
                     </div>
-                    <div className="text-right">
-                      <p className="font-serif text-2xl">{formatMoneyDetailed(d.balance)}</p>
-                      <p className="text-xs text-muted-foreground">of {formatMoneyDetailed(d.starting_balance)}</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button size="sm" variant="outline" onClick={() => setPayingDebt(d)}>
-                        Log payment
-                      </Button>
-                      <Button size="icon" variant="ghost" onClick={() => deleteDebt(d.id)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+                    <CheckCircle2 className="h-6 w-6 text-success" />
                   </div>
-                  <div className="mt-4 h-1 bg-muted rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-brass transition-all"
-                      style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
-                    />
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-2">{Math.round(progress)}% paid off</p>
-                  <DebtPayoffPlanner
-                    debt={{
-                      id: d.id,
-                      name: d.name,
-                      balance: d.balance,
-                      apr: d.apr,
-                      minimum_payment: d.minimum_payment,
-                    }}
-                    initialExtra={d.extra_payment}
-                  />
-                </Card>
-              );
-            })}
-
-            {paid.length > 0 && (
-              <div className="pt-8">
-                <p className="text-xs uppercase tracking-[0.2em] text-success mb-4">Paid off · {paid.length}</p>
-                <div className="space-y-3">
-                  {paid.map((d) => (
-                    <Card key={d.id} className="p-5 bg-success/5 border-success/30 rounded-sm">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="font-serif text-lg">{d.name}</h3>
-                          <p className="text-sm text-muted-foreground">Cleared {formatMoneyDetailed(d.starting_balance)}</p>
-                        </div>
-                        <span className="font-serif text-success text-2xl">✓</span>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
+                ))}
               </div>
-            )}
-          </div>
-        )}
-      </main>
+            </div>
+          )}
+        </div>
+      )}
 
       <Dialog open={!!payingDebt} onOpenChange={(o) => !o && setPayingDebt(null)}>
         {payingDebt && (
           <PayDialog
             debt={payingDebt}
-            userId={user!.id}
+            userId={user.id}
             onDone={() => {
               setPayingDebt(null);
               void load();
@@ -238,7 +264,7 @@ function AddDebtDialog({ userId, onAdded }: { userId: string; onAdded: () => voi
     });
     setBusy(false);
     if (error) return toast.error(error.message);
-    toast.success(`${debtName} added to your ledger`, {
+    toast.success(`${debtName} added 🎉`, {
       description: `${formatMoneyDetailed(bal)} at ${apr}% APR is now being tracked.`,
     });
     resetForm();
@@ -246,31 +272,71 @@ function AddDebtDialog({ userId, onAdded }: { userId: string; onAdded: () => voi
   }
 
   return (
-    <DialogContent className="bg-card">
+    <DialogContent className="rounded-3xl">
       <DialogHeader>
-        <DialogTitle className="font-serif text-2xl">New debt entry</DialogTitle>
+        <DialogTitle className="font-display text-2xl font-extrabold">Add a debt</DialogTitle>
       </DialogHeader>
       <form onSubmit={submit} className="space-y-4">
-        <div>
-          <Label htmlFor="dn">Name</Label>
-          <Input id="dn" required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Visa card" />
+        <div className="space-y-1.5">
+          <Label htmlFor="dn">What is it?</Label>
+          <Input
+            id="dn"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. Visa, Student loan"
+            className="h-12 rounded-2xl bg-surface text-base"
+          />
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1.5">
             <Label htmlFor="db">Balance ($)</Label>
-            <Input id="db" type="number" step="0.01" min="0" required value={balance} onChange={(e) => setBalance(e.target.value)} />
+            <Input
+              id="db"
+              type="number"
+              inputMode="decimal"
+              step="0.01"
+              min="0"
+              required
+              value={balance}
+              onChange={(e) => setBalance(e.target.value)}
+              className="h-12 rounded-2xl bg-surface text-base"
+            />
           </div>
-          <div>
+          <div className="space-y-1.5">
             <Label htmlFor="da">APR (%)</Label>
-            <Input id="da" type="number" step="0.01" min="0" max="100" required value={apr} onChange={(e) => setApr(e.target.value)} />
+            <Input
+              id="da"
+              type="number"
+              inputMode="decimal"
+              step="0.01"
+              min="0"
+              max="100"
+              required
+              value={apr}
+              onChange={(e) => setApr(e.target.value)}
+              className="h-12 rounded-2xl bg-surface text-base"
+            />
           </div>
         </div>
-        <div>
-          <Label htmlFor="dm">Minimum payment ($)</Label>
-          <Input id="dm" type="number" step="0.01" min="0" required value={minPay} onChange={(e) => setMinPay(e.target.value)} />
+        <div className="space-y-1.5">
+          <Label htmlFor="dm">Minimum payment ($/mo)</Label>
+          <Input
+            id="dm"
+            type="number"
+            inputMode="decimal"
+            step="0.01"
+            min="0"
+            required
+            value={minPay}
+            onChange={(e) => setMinPay(e.target.value)}
+            className="h-12 rounded-2xl bg-surface text-base"
+          />
         </div>
         <DialogFooter>
-          <Button type="submit" disabled={busy}>{busy ? "Adding…" : "Add to ledger"}</Button>
+          <Button type="submit" disabled={busy} className="w-full h-12 rounded-2xl font-semibold">
+            {busy ? "Adding…" : "Add debt"}
+          </Button>
         </DialogFooter>
       </form>
     </DialogContent>
@@ -309,20 +375,39 @@ function PayDialog({ debt, userId, onDone }: { debt: DebtRow; userId: string; on
   }
 
   return (
-    <DialogContent className="bg-card">
+    <DialogContent className="rounded-3xl">
       <DialogHeader>
-        <DialogTitle className="font-serif text-2xl">Log payment · {debt.name}</DialogTitle>
+        <DialogTitle className="font-display text-xl font-extrabold">
+          Log payment · {debt.name}
+        </DialogTitle>
       </DialogHeader>
       <form onSubmit={submit} className="space-y-4">
         <p className="text-sm text-muted-foreground">
-          Current balance: <span className="font-serif text-ink">{formatMoneyDetailed(debt.balance)}</span>
+          Current balance:{" "}
+          <span className="font-display font-bold text-foreground">
+            {formatMoneyDetailed(debt.balance)}
+          </span>
         </p>
-        <div>
+        <div className="space-y-1.5">
           <Label htmlFor="pa">Amount ($)</Label>
-          <Input id="pa" type="number" step="0.01" min="0.01" max={debt.balance} required value={amount} onChange={(e) => setAmount(e.target.value)} autoFocus />
+          <Input
+            id="pa"
+            type="number"
+            inputMode="decimal"
+            step="0.01"
+            min="0.01"
+            max={debt.balance}
+            required
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            autoFocus
+            className="h-14 rounded-2xl bg-surface text-xl font-display font-bold text-center"
+          />
         </div>
         <DialogFooter>
-          <Button type="submit" disabled={busy}>{busy ? "Logging…" : "Log payment"}</Button>
+          <Button type="submit" disabled={busy} className="w-full h-12 rounded-2xl font-semibold">
+            {busy ? "Logging…" : "Log payment"}
+          </Button>
         </DialogFooter>
       </form>
     </DialogContent>
@@ -340,12 +425,10 @@ function DebtPayoffPlanner({
   const [saving, setSaving] = useState(false);
   const maxExtra = Math.max(100, Math.round(debt.minimum_payment * 4));
 
-  // Sync when the persisted value changes (e.g. after reload)
   useEffect(() => {
     setExtra(initialExtra);
   }, [initialExtra, debt.id]);
 
-  // Debounced persistence
   useEffect(() => {
     if (extra === initialExtra) return;
     const t = setTimeout(async () => {
@@ -355,27 +438,31 @@ function DebtPayoffPlanner({
         .update({ extra_payment: extra })
         .eq("id", debt.id);
       setSaving(false);
-      if (error) toast.error(`Couldn't save extra payment: ${error.message}`);
+      if (error) toast.error(`Couldn't save: ${error.message}`);
     }, 600);
     return () => clearTimeout(t);
   }, [extra, initialExtra, debt.id]);
 
   return (
-    <div className="mt-5 pt-5 border-t border-border/60 space-y-4">
-      <div className="flex items-baseline justify-between flex-wrap gap-2">
-        <Label htmlFor={`extra-${debt.id}`} className="text-xs uppercase tracking-[0.18em] text-brass">
-          Extra paid per month {saving && <span className="ml-2 text-muted-foreground normal-case tracking-normal italic">saving…</span>}
+    <div className="mt-5 pt-5 border-t border-border space-y-4">
+      <div className="flex items-baseline justify-between gap-2">
+        <Label htmlFor={`extra-${debt.id}`} className="text-[10px] font-bold uppercase tracking-widest text-primary">
+          Extra / month{" "}
+          {saving && (
+            <span className="ml-1 text-muted-foreground normal-case tracking-normal italic">saving…</span>
+          )}
         </Label>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <span className="text-xs text-muted-foreground">$</span>
           <Input
             id={`extra-${debt.id}`}
             type="number"
+            inputMode="decimal"
             min={0}
             step={10}
             value={extra}
             onChange={(e) => setExtra(Math.max(0, Number(e.target.value) || 0))}
-            className="h-8 w-24 text-right font-serif"
+            className="h-9 w-20 text-right font-display font-bold rounded-xl bg-muted border-transparent"
           />
         </div>
       </div>

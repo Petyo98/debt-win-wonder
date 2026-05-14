@@ -45,22 +45,21 @@ export function DebtPayoffChart({ debt, extraPerMonth = 0 }: Props) {
       : `${monthsToFreedom}m`;
 
   return (
-    <div className="mt-5 pt-5 border-t border-border/60">
+    <div className="mt-1">
       <div className="flex items-baseline justify-between mb-3 flex-wrap gap-2">
-        <p className="text-xs uppercase tracking-[0.18em] text-brass">Payoff timeline</p>
-        <p className="text-xs text-muted-foreground">
-          Paid off in <span className="font-serif text-ink">{yearsLabel}</span> ·
-          {" "}<span className="font-serif text-ink">{formatMoney(totalInterest)}</span> interest ·
-          {" "}{payoffDate.toLocaleDateString(undefined, { month: "short", year: "numeric" })}
+        <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Payoff timeline</p>
+        <p className="text-[11px] text-muted-foreground">
+          <span className="font-display font-bold text-foreground">{yearsLabel}</span> ·
+          {" "}<span className="font-display font-bold text-foreground">{formatMoney(totalInterest)}</span> interest
         </p>
       </div>
-      <div className="h-40 w-full">
+      <div className="h-36 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id={`grad-${debt.id}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="var(--brass)" stopOpacity={0.45} />
-                <stop offset="100%" stopColor="var(--brass)" stopOpacity={0.02} />
+                <stop offset="0%" stopColor="var(--primary)" stopOpacity={0.4} />
+                <stop offset="100%" stopColor="var(--primary)" stopOpacity={0.02} />
               </linearGradient>
             </defs>
             <XAxis
@@ -74,14 +73,14 @@ export function DebtPayoffChart({ debt, extraPerMonth = 0 }: Props) {
               tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
               tickLine={false}
               axisLine={false}
-              width={48}
+              width={44}
               tickFormatter={(v) => formatMoney(Number(v))}
             />
             <Tooltip
               contentStyle={{
                 background: "var(--card)",
                 border: "1px solid var(--border)",
-                borderRadius: 2,
+                borderRadius: 12,
                 fontSize: 12,
               }}
               labelStyle={{ color: "var(--muted-foreground)" }}
@@ -90,13 +89,16 @@ export function DebtPayoffChart({ debt, extraPerMonth = 0 }: Props) {
             <Area
               type="monotone"
               dataKey="balance"
-              stroke="var(--brass)"
-              strokeWidth={1.5}
+              stroke="var(--primary)"
+              strokeWidth={2}
               fill={`url(#grad-${debt.id})`}
             />
           </AreaChart>
         </ResponsiveContainer>
       </div>
+      <p className="text-[11px] text-muted-foreground mt-1 text-right">
+        Free by {payoffDate.toLocaleDateString(undefined, { month: "short", year: "numeric" })}
+      </p>
     </div>
   );
 }
