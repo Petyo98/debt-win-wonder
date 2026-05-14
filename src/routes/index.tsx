@@ -1,123 +1,135 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import heroImg from "@/assets/hero-ledger.jpg";
-import { SiteHeader } from "@/components/SiteHeader";
 import { Button } from "@/components/ui/button";
+import { ArrowRight, Sparkles, Target, Calendar, ShieldCheck } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Ledger — Pay off debt with quiet discipline" },
+      { title: "DebtFree — Pay off debt faster, one calm day at a time" },
       {
         name: "description",
         content:
-          "An editorial debt-payoff companion. Snowball or avalanche, daily proactive actions, and a clear date you'll be free.",
+          "DebtFree is your mobile debt payoff coach. Daily actions, motivating progress, and a clear path to your debt-free date.",
       },
-      { property: "og:title", content: "Ledger — Pay off debt with quiet discipline" },
-      { property: "og:description", content: "An editorial debt-payoff companion. Snowball or avalanche, daily actions, a clear payoff date." },
+      { property: "og:title", content: "DebtFree — Your debt payoff coach" },
+      { property: "og:description", content: "Daily actions, motivating progress, a clear debt-free date." },
     ],
   }),
-  component: Home,
+  component: Landing,
 });
 
-function Home() {
+function Landing() {
   return (
-    <div className="min-h-screen bg-paper">
-      <SiteHeader />
+    <div className="min-h-screen bg-background">
+      <header className="mx-auto max-w-md px-5 pt-6 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="h-9 w-9 rounded-xl bg-primary text-primary-foreground grid place-items-center font-bold">
+            ⏣
+          </div>
+          <span className="font-display font-bold text-lg tracking-tight">DebtFree</span>
+        </div>
+        <Link to="/auth">
+          <Button variant="ghost" size="sm" className="rounded-full">
+            Sign in
+          </Button>
+        </Link>
+      </header>
 
       {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div className="mx-auto max-w-6xl px-6 pt-16 md:pt-24 pb-20 md:pb-32 grid md:grid-cols-2 gap-12 md:gap-16 items-center">
-          <div className="space-y-8">
-            <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted-foreground">
-              <span className="h-px w-8 bg-brass" /> Vol. 1 · A debt-free practice
+      <section className="relative mx-auto max-w-md px-5 pt-10 pb-12">
+        <div className="absolute inset-x-0 -top-10 h-80 bg-mesh blur-3xl opacity-80 -z-10" />
+        <div className="inline-flex items-center gap-2 rounded-full bg-primary-soft text-primary px-3 py-1 text-xs font-semibold mb-6">
+          <Sparkles className="h-3.5 w-3.5" /> Your debt payoff coach
+        </div>
+        <h1 className="font-display text-[40px] leading-[1.05] tracking-tight font-extrabold text-balance">
+          Pay off debt
+          <br />
+          <span className="text-primary">faster</span>, calmer,
+          <br />
+          one day at a time.
+        </h1>
+        <p className="mt-5 text-base text-muted-foreground leading-relaxed">
+          DebtFree gives you one small action each day, tracks every win, and shows the exact
+          date you'll be free. No budgets. No shame. Just momentum.
+        </p>
+
+        <div className="mt-8 space-y-3">
+          <Link to="/onboarding" className="block">
+            <Button size="lg" className="w-full rounded-2xl h-14 text-base font-semibold shadow-glow">
+              Start free <ArrowRight className="ml-1 h-5 w-5" />
+            </Button>
+          </Link>
+          <p className="text-center text-xs text-muted-foreground">
+            Takes 60 seconds · No credit card
+          </p>
+        </div>
+
+        {/* Phone-like preview */}
+        <div className="mt-12 rounded-3xl bg-surface border border-border shadow-lift p-5">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="text-xs text-muted-foreground">Debt-free by</p>
+              <p className="font-display font-bold text-2xl">Mar 2027</p>
             </div>
-            <h1 className="font-serif text-5xl md:text-7xl leading-[1.02] tracking-tight text-balance">
-              Pay off debt with{" "}
-              <em className="text-brass not-italic font-normal italic">quiet discipline.</em>
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-md leading-relaxed">
-              Ledger is a daily companion for becoming debt-free. Choose your strategy,
-              take one small action a day, and watch the date you'll be free move closer.
-            </p>
-            <div className="flex flex-wrap items-center gap-4 pt-2">
-              <Link to="/auth">
-                <Button size="lg" className="px-8">Begin your ledger</Button>
-              </Link>
-              <Link to="/strategy">
-                <Button size="lg" variant="ghost">See how it works →</Button>
-              </Link>
+            <div className="h-14 w-14 rounded-full bg-primary-soft grid place-items-center">
+              <Target className="h-6 w-6 text-primary" />
             </div>
           </div>
-          <div className="relative">
-            <div className="absolute -inset-6 bg-brass/10 rounded-sm rotate-1" />
-            <img
-              src={heroImg}
-              alt="An open ledger book with a brass pen on cream linen"
-              width={1536}
-              height={1280}
-              className="relative w-full h-auto rounded-sm shadow-paper object-cover"
-            />
+          <div className="h-2 rounded-full bg-muted overflow-hidden">
+            <div className="h-full w-[42%] rounded-full bg-primary" />
+          </div>
+          <p className="text-xs text-muted-foreground mt-2">42% of the way there</p>
+          <div className="mt-4 rounded-2xl bg-primary-soft/60 p-4">
+            <p className="text-[10px] uppercase tracking-widest text-primary font-bold">Today</p>
+            <p className="font-semibold mt-1">Skip one impulse buy</p>
+            <p className="text-xs text-muted-foreground mt-1">Save $12 → ~3 days off your payoff</p>
           </div>
         </div>
       </section>
 
       {/* Pillars */}
-      <section className="border-t border-border/60 bg-card/40">
-        <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
-          <div className="max-w-2xl mb-16">
-            <p className="text-xs uppercase tracking-[0.2em] text-brass mb-4">The Practice</p>
-            <h2 className="font-serif text-4xl md:text-5xl leading-tight tracking-tight">
-              Three habits. One quiet, deliberate path to freedom.
-            </h2>
+      <section className="mx-auto max-w-md px-5 py-12 space-y-4">
+        <p className="text-xs font-bold uppercase tracking-widest text-primary">How it works</p>
+        <h2 className="font-display text-3xl font-bold tracking-tight">Three habits. One free life.</h2>
+
+        {[
+          { icon: Target, title: "Pick a strategy", body: "Snowball for momentum or avalanche for math. We'll show you which saves more." },
+          { icon: Calendar, title: "One action a day", body: "A small, specific prompt every morning. Build a streak. Stay motivated." },
+          { icon: ShieldCheck, title: "Watch the line fall", body: "Log payments, see your debt-free date move closer, celebrate every payoff." },
+        ].map((p, i) => (
+          <div key={p.title} className="rounded-2xl bg-surface border border-border p-5 flex gap-4 items-start">
+            <div className="h-11 w-11 rounded-xl bg-primary-soft text-primary grid place-items-center shrink-0">
+              <p.icon className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Step {i + 1}</p>
+              <h3 className="font-display font-bold text-lg mt-0.5">{p.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed mt-1">{p.body}</p>
+            </div>
           </div>
-          <div className="grid md:grid-cols-3 gap-12">
-            {[
-              {
-                num: "I.",
-                title: "Choose your method",
-                body: "Snowball for momentum, avalanche for math. Compare both and watch the date you'll be debt-free move years closer.",
-              },
-              {
-                num: "II.",
-                title: "One action a day",
-                body: "A new prompt every morning — small, specific, doable. Build a streak. The discipline is the point.",
-              },
-              {
-                num: "III.",
-                title: "Watch the line fall",
-                body: "Log payments, see the curve bend toward zero, and celebrate every debt paid off.",
-              },
-            ].map((p) => (
-              <div key={p.num} className="space-y-4">
-                <div className="font-serif text-3xl text-brass">{p.num}</div>
-                <h3 className="font-serif text-2xl">{p.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{p.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        ))}
       </section>
 
-      {/* Quote */}
-      <section className="border-t border-border/60">
-        <div className="mx-auto max-w-3xl px-6 py-24 md:py-32 text-center">
-          <p className="font-serif text-3xl md:text-4xl leading-snug italic text-balance">
-            "Beware of little expenses; a small leak will sink a great ship."
-          </p>
-          <p className="mt-6 text-sm uppercase tracking-[0.2em] text-muted-foreground">
-            — Benjamin Franklin
-          </p>
-          <div className="mt-12">
-            <Link to="/auth">
-              <Button size="lg" className="px-10">Start your first entry</Button>
-            </Link>
-          </div>
+      {/* CTA */}
+      <section className="mx-auto max-w-md px-5 pb-16">
+        <div className="rounded-3xl bg-foreground text-background p-8 text-center">
+          <p className="text-xs font-bold uppercase tracking-widest text-primary">Free forever</p>
+          <h2 className="font-display text-2xl font-bold mt-3 leading-tight text-balance">
+            The best day to start was yesterday. The next best is today.
+          </h2>
+          <Link to="/onboarding" className="block mt-6">
+            <Button
+              size="lg"
+              className="w-full rounded-2xl h-14 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
+            >
+              Get started — it's free
+            </Button>
+          </Link>
         </div>
+        <p className="text-center text-xs text-muted-foreground mt-6">
+          DebtFree · Built for the journey, not the shame.
+        </p>
       </section>
-
-      <footer className="border-t border-border/60 py-8 text-center text-sm text-muted-foreground">
-        Ledger · A practice in becoming debt-free.
-      </footer>
     </div>
   );
 }
