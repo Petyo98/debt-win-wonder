@@ -15,6 +15,7 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as DebtsRouteImport } from './routes/debts'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AddDebtRouteImport } from './routes/add-debt'
 import { Route as IndexRouteImport } from './routes/index'
 
 const StrategyRoute = StrategyRouteImport.update({
@@ -47,6 +48,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AddDebtRoute = AddDebtRouteImport.update({
+  id: '/add-debt',
+  path: '/add-debt',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -55,6 +61,7 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/add-debt': typeof AddDebtRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/debts': typeof DebtsRoute
@@ -64,6 +71,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/add-debt': typeof AddDebtRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/debts': typeof DebtsRoute
@@ -74,6 +82,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/add-debt': typeof AddDebtRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
   '/debts': typeof DebtsRoute
@@ -85,6 +94,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/add-debt'
     | '/auth'
     | '/dashboard'
     | '/debts'
@@ -94,6 +104,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/add-debt'
     | '/auth'
     | '/dashboard'
     | '/debts'
@@ -103,6 +114,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/add-debt'
     | '/auth'
     | '/dashboard'
     | '/debts'
@@ -113,6 +125,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AddDebtRoute: typeof AddDebtRoute
   AuthRoute: typeof AuthRoute
   DashboardRoute: typeof DashboardRoute
   DebtsRoute: typeof DebtsRoute
@@ -165,6 +178,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/add-debt': {
+      id: '/add-debt'
+      path: '/add-debt'
+      fullPath: '/add-debt'
+      preLoaderRoute: typeof AddDebtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -177,6 +197,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AddDebtRoute: AddDebtRoute,
   AuthRoute: AuthRoute,
   DashboardRoute: DashboardRoute,
   DebtsRoute: DebtsRoute,
@@ -187,3 +208,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

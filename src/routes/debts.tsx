@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { RequireAuth } from "@/components/RequireAuth";
@@ -12,7 +12,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
@@ -52,7 +51,6 @@ function DebtsPage() {
   const { user } = useAuth();
   const [debts, setDebts] = useState<DebtRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [openAdd, setOpenAdd] = useState(false);
   const [payingDebt, setPayingDebt] = useState<DebtRow | null>(null);
 
   useEffect(() => {
@@ -102,20 +100,11 @@ function DebtsPage() {
           <p className="text-xs text-muted-foreground">Your portfolio</p>
           <h1 className="font-display text-2xl font-extrabold tracking-tight">Debts</h1>
         </div>
-        <Dialog open={openAdd} onOpenChange={setOpenAdd}>
-          <DialogTrigger asChild>
-            <Button size="sm" className="rounded-full h-10 px-4 font-semibold shadow-soft">
-              <Plus className="h-4 w-4" /> Add
-            </Button>
-          </DialogTrigger>
-          <AddDebtDialog
-            userId={user.id}
-            onAdded={() => {
-              setOpenAdd(false);
-              void load();
-            }}
-          />
-        </Dialog>
+        <Link to="/add-debt">
+          <Button size="sm" className="rounded-full h-10 px-4 font-semibold shadow-soft">
+            <Plus className="h-4 w-4" /> Add
+          </Button>
+        </Link>
       </header>
 
       {loading ? (
@@ -126,9 +115,11 @@ function DebtsPage() {
           <p className="text-sm text-muted-foreground mt-2">
             Add your first debt to start your countdown.
           </p>
-          <Button onClick={() => setOpenAdd(true)} className="mt-5 rounded-2xl h-12 font-semibold w-full">
-            <Plus className="h-4 w-4" /> Add a debt
-          </Button>
+          <Link to="/add-debt">
+            <Button className="mt-5 rounded-2xl h-12 font-semibold w-full">
+              <Plus className="h-4 w-4" /> Add a debt
+            </Button>
+          </Link>
         </div>
       ) : (
         <div className="space-y-4">
@@ -232,114 +223,6 @@ function DebtsPage() {
         )}
       </Dialog>
     </div>
-  );
-}
-
-function AddDebtDialog({ userId, onAdded }: { userId: string; onAdded: () => void }) {
-  const [name, setName] = useState("");
-  const [balance, setBalance] = useState("");
-  const [apr, setApr] = useState("");
-  const [minPay, setMinPay] = useState("");
-  const [busy, setBusy] = useState(false);
-
-  function resetForm() {
-    setName("");
-    setBalance("");
-    setApr("");
-    setMinPay("");
-  }
-
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    setBusy(true);
-    const bal = Number(balance);
-    const debtName = name;
-    const { error } = await supabase.from("debts").insert({
-      user_id: userId,
-      name,
-      balance: bal,
-      starting_balance: bal,
-      apr: Number(apr),
-      minimum_payment: Number(minPay),
-    });
-    setBusy(false);
-    if (error) return toast.error(error.message);
-    toast.success(`${debtName} added 🎉`, {
-      description: `${formatMoneyDetailed(bal)} at ${apr}% APR is now being tracked.`,
-    });
-    resetForm();
-    onAdded();
-  }
-
-  return (
-    <DialogContent className="rounded-3xl">
-      <DialogHeader>
-        <DialogTitle className="font-display text-2xl font-extrabold">Add a debt</DialogTitle>
-      </DialogHeader>
-      <form onSubmit={submit} className="space-y-4">
-        <div className="space-y-1.5">
-          <Label htmlFor="dn">What is it?</Label>
-          <Input
-            id="dn"
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="e.g. Visa, Student loan"
-            className="h-12 rounded-2xl bg-surface text-base"
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1.5">
-            <Label htmlFor="db">Balance ($)</Label>
-            <Input
-              id="db"
-              type="number"
-              inputMode="decimal"
-              step="0.01"
-              min="0"
-              required
-              value={balance}
-              onChange={(e) => setBalance(e.target.value)}
-              className="h-12 rounded-2xl bg-surface text-base"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="da">APR (%)</Label>
-            <Input
-              id="da"
-              type="number"
-              inputMode="decimal"
-              step="0.01"
-              min="0"
-              max="100"
-              required
-              value={apr}
-              onChange={(e) => setApr(e.target.value)}
-              className="h-12 rounded-2xl bg-surface text-base"
-            />
-          </div>
-        </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="dm">Minimum payment ($/mo)</Label>
-          <Input
-            id="dm"
-            type="number"
-            inputMode="decimal"
-            step="0.01"
-            min="0"
-            required
-            value={minPay}
-            onChange={(e) => setMinPay(e.target.value)}
-            className="h-12 rounded-2xl bg-surface text-base"
-          />
-        </div>
-        <DialogFooter>
-          <Button type="submit" disabled={busy} className="w-full h-12 rounded-2xl font-semibold">
-            {busy ? "Adding…" : "Add debt"}
-          </Button>
-        </DialogFooter>
-      </form>
-    </DialogContent>
   );
 }
 
