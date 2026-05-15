@@ -100,20 +100,11 @@ function DebtsPage() {
           <p className="text-xs text-muted-foreground">Your portfolio</p>
           <h1 className="font-display text-2xl font-extrabold tracking-tight">Debts</h1>
         </div>
-        <Dialog open={openAdd} onOpenChange={setOpenAdd}>
-          <DialogTrigger asChild>
-            <Button size="sm" className="rounded-full h-10 px-4 font-semibold shadow-soft">
-              <Plus className="h-4 w-4" /> Add
-            </Button>
-          </DialogTrigger>
-          <AddDebtDialog
-            userId={user.id}
-            onAdded={() => {
-              setOpenAdd(false);
-              void load();
-            }}
-          />
-        </Dialog>
+        <Link to="/add-debt">
+          <Button size="sm" className="rounded-full h-10 px-4 font-semibold shadow-soft">
+            <Plus className="h-4 w-4" /> Add
+          </Button>
+        </Link>
       </header>
 
       {loading ? (
