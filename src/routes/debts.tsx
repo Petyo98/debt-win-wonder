@@ -115,9 +115,11 @@ function DebtsPage() {
           <p className="text-sm text-muted-foreground mt-2">
             Add your first debt to start your countdown.
           </p>
-          <Button onClick={() => setOpenAdd(true)} className="mt-5 rounded-2xl h-12 font-semibold w-full">
-            <Plus className="h-4 w-4" /> Add a debt
-          </Button>
+          <Link to="/add-debt">
+            <Button className="mt-5 rounded-2xl h-12 font-semibold w-full">
+              <Plus className="h-4 w-4" /> Add a debt
+            </Button>
+          </Link>
         </div>
       ) : (
         <div className="space-y-4">
