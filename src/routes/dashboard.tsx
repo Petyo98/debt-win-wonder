@@ -52,7 +52,7 @@ function Dashboard() {
   const [submittingCheckin, setSubmittingCheckin] = useState(false);
 
   const todayKey = new Date().toISOString().slice(0, 10);
-  const todayAction = useMemo(() => actionForDate(new Date()), []);
+  const [skippedToday, setSkippedToday] = useState(false);
   const checkedInToday = checkins.some((c) => c.checkin_date === todayKey);
   const streak = useMemo(() => calculateStreak(checkins.map((c) => c.checkin_date)), [checkins]);
 
@@ -105,11 +105,42 @@ function Dashboard() {
   const minSum = totalMinimums(debts);
   const balanceSum = totalBalance(debts);
   const monthlyBudget = minSum + extraBudget;
+  const strategy = profile?.preferred_strategy ?? "snowball";
   const projection = useMemo(
-    () => project(debts, monthlyBudget, profile?.preferred_strategy ?? "snowball"),
-    [debts, monthlyBudget, profile]
+    () => project(debts, monthlyBudget, strategy),
+    [debts, monthlyBudget, strategy]
   );
+  const baselineProjection = useMemo(
+    () => project(debts, minSum, strategy),
+    [debts, minSum, strategy]
+  );
+  const interestSaved = Math.max(0, baselineProjection.totalInterest - projection.totalInterest);
   const progressPct = startingTotal > 0 ? Math.min(100, Math.max(0, ((startingTotal - balanceSum) / startingTotal) * 100)) : 0;
+
+  // Personalized daily action: focus on top-priority debt, suggest a small extra
+  const focusDebt = useMemo(() => {
+    if (debts.length === 0) return null;
+    const sorted = [...debts];
+    if (strategy === "snowball") sorted.sort((a, b) => a.balance - b.balance);
+    else sorted.sort((a, b) => b.apr - a.apr);
+    return sorted[0];
+  }, [debts, strategy]);
+
+  const suggestedExtra = useMemo(() => {
+    if (!focusDebt) return 0;
+    const base = Math.max(10, Math.round(focusDebt.minimum_payment * 0.2 / 5) * 5);
+    return Math.min(base, Math.ceil(focusDebt.balance));
+  }, [focusDebt]);
+
+  const todayAction = useMemo(() => {
+    if (focusDebt && suggestedExtra > 0) {
+      return {
+        title: `Pay ${formatMoney(suggestedExtra)} extra today toward your ${focusDebt.name}`,
+        description: `Every extra dollar on your focus debt shrinks the interest you'll ever pay. One small move, big compounding win.`,
+      };
+    }
+    return actionForDate(new Date());
+  }, [focusDebt, suggestedExtra]);
 
   async function handleCheckin() {
     if (!user) return;
@@ -129,9 +160,14 @@ function Dashboard() {
       toast.error(error.message);
       return;
     }
-    toast.success("Logged. Keep the streak alive.");
+    toast.success("Nice. Streak alive. 🔥");
     setSavedAmount("");
     void loadAll();
+  }
+
+  function handleSkip() {
+    setSkippedToday(true);
+    toast("Skipped for today — see you tomorrow.", { icon: "👋" });
   }
 
   if (loading) {
@@ -207,9 +243,10 @@ function Dashboard() {
           </div>
 
           {/* Stat tiles */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             <Tile label="Total debt" value={formatMoney(balanceSum)} />
-            <Tile label="Paid off" value={`${paidOffCount}`} hint="debts cleared" />
+            <Tile label="Interest saved" value={formatMoney(interestSaved)} hint="vs minimums" />
+            <Tile label="Paid off" value={`${paidOffCount}`} hint="cleared" />
           </div>
 
           {/* Daily action */}
@@ -231,6 +268,10 @@ function Dashboard() {
               <div className="mt-4 rounded-2xl bg-surface/70 p-3 text-center text-sm text-foreground/70">
                 Streak: <span className="font-bold text-primary">{streak} days</span> 🔥
               </div>
+            ) : skippedToday ? (
+              <div className="mt-4 rounded-2xl bg-surface/70 p-3 text-center text-sm text-foreground/70">
+                Skipped today. A fresh action drops tomorrow.
+              </div>
             ) : (
               <div className="mt-4 space-y-3">
                 <div className="flex items-center gap-2">
@@ -247,13 +288,22 @@ function Dashboard() {
                     className="h-12 rounded-2xl bg-surface border-transparent text-base"
                   />
                 </div>
-                <Button
-                  onClick={handleCheckin}
-                  disabled={submittingCheckin}
-                  className="w-full h-12 rounded-2xl font-semibold"
-                >
-                  {submittingCheckin ? "Saving…" : "Mark today complete"}
-                </Button>
+                <div className="grid grid-cols-[1fr_auto] gap-2">
+                  <Button
+                    onClick={handleCheckin}
+                    disabled={submittingCheckin}
+                    className="h-12 rounded-2xl font-semibold"
+                  >
+                    {submittingCheckin ? "Saving…" : "Mark as Done"}
+                  </Button>
+                  <Button
+                    onClick={handleSkip}
+                    variant="ghost"
+                    className="h-12 rounded-2xl font-semibold text-foreground/60 hover:text-foreground"
+                  >
+                    Skip
+                  </Button>
+                </div>
               </div>
             )}
           </div>
