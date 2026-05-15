@@ -268,6 +268,10 @@ function Dashboard() {
               <div className="mt-4 rounded-2xl bg-surface/70 p-3 text-center text-sm text-foreground/70">
                 Streak: <span className="font-bold text-primary">{streak} days</span> 🔥
               </div>
+            ) : skippedToday ? (
+              <div className="mt-4 rounded-2xl bg-surface/70 p-3 text-center text-sm text-foreground/70">
+                Skipped today. A fresh action drops tomorrow.
+              </div>
             ) : (
               <div className="mt-4 space-y-3">
                 <div className="flex items-center gap-2">
@@ -284,13 +288,22 @@ function Dashboard() {
                     className="h-12 rounded-2xl bg-surface border-transparent text-base"
                   />
                 </div>
-                <Button
-                  onClick={handleCheckin}
-                  disabled={submittingCheckin}
-                  className="w-full h-12 rounded-2xl font-semibold"
-                >
-                  {submittingCheckin ? "Saving…" : "Mark today complete"}
-                </Button>
+                <div className="grid grid-cols-[1fr_auto] gap-2">
+                  <Button
+                    onClick={handleCheckin}
+                    disabled={submittingCheckin}
+                    className="h-12 rounded-2xl font-semibold"
+                  >
+                    {submittingCheckin ? "Saving…" : "Mark as Done"}
+                  </Button>
+                  <Button
+                    onClick={handleSkip}
+                    variant="ghost"
+                    className="h-12 rounded-2xl font-semibold text-foreground/60 hover:text-foreground"
+                  >
+                    Skip
+                  </Button>
+                </div>
               </div>
             )}
           </div>
