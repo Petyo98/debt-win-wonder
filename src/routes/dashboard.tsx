@@ -243,9 +243,10 @@ function Dashboard() {
           </div>
 
           {/* Stat tiles */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             <Tile label="Total debt" value={formatMoney(balanceSum)} />
-            <Tile label="Paid off" value={`${paidOffCount}`} hint="debts cleared" />
+            <Tile label="Interest saved" value={formatMoney(interestSaved)} hint="vs minimums" />
+            <Tile label="Paid off" value={`${paidOffCount}`} hint="cleared" />
           </div>
 
           {/* Daily action */}
