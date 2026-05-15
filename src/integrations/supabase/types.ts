@@ -51,6 +51,7 @@ export type Database = {
           is_paid_off: boolean
           minimum_payment: number
           name: string
+          remaining_months: number | null
           starting_balance: number
           updated_at: string
           user_id: string
@@ -64,6 +65,7 @@ export type Database = {
           is_paid_off?: boolean
           minimum_payment?: number
           name: string
+          remaining_months?: number | null
           starting_balance: number
           updated_at?: string
           user_id: string
@@ -77,6 +79,7 @@ export type Database = {
           is_paid_off?: boolean
           minimum_payment?: number
           name?: string
+          remaining_months?: number | null
           starting_balance?: number
           updated_at?: string
           user_id?: string
