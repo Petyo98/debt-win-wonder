@@ -51,7 +51,6 @@ function DebtsPage() {
   const { user } = useAuth();
   const [debts, setDebts] = useState<DebtRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [openAdd, setOpenAdd] = useState(false);
   const [payingDebt, setPayingDebt] = useState<DebtRow | null>(null);
 
   useEffect(() => {
