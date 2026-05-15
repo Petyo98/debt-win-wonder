@@ -52,7 +52,7 @@ function Dashboard() {
   const [submittingCheckin, setSubmittingCheckin] = useState(false);
 
   const todayKey = new Date().toISOString().slice(0, 10);
-  const todayAction = useMemo(() => actionForDate(new Date()), []);
+  const [skippedToday, setSkippedToday] = useState(false);
   const checkedInToday = checkins.some((c) => c.checkin_date === todayKey);
   const streak = useMemo(() => calculateStreak(checkins.map((c) => c.checkin_date)), [checkins]);
 
