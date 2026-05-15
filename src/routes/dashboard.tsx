@@ -105,11 +105,42 @@ function Dashboard() {
   const minSum = totalMinimums(debts);
   const balanceSum = totalBalance(debts);
   const monthlyBudget = minSum + extraBudget;
+  const strategy = profile?.preferred_strategy ?? "snowball";
   const projection = useMemo(
-    () => project(debts, monthlyBudget, profile?.preferred_strategy ?? "snowball"),
-    [debts, monthlyBudget, profile]
+    () => project(debts, monthlyBudget, strategy),
+    [debts, monthlyBudget, strategy]
   );
+  const baselineProjection = useMemo(
+    () => project(debts, minSum, strategy),
+    [debts, minSum, strategy]
+  );
+  const interestSaved = Math.max(0, baselineProjection.totalInterest - projection.totalInterest);
   const progressPct = startingTotal > 0 ? Math.min(100, Math.max(0, ((startingTotal - balanceSum) / startingTotal) * 100)) : 0;
+
+  // Personalized daily action: focus on top-priority debt, suggest a small extra
+  const focusDebt = useMemo(() => {
+    if (debts.length === 0) return null;
+    const sorted = [...debts];
+    if (strategy === "snowball") sorted.sort((a, b) => a.balance - b.balance);
+    else sorted.sort((a, b) => b.apr - a.apr);
+    return sorted[0];
+  }, [debts, strategy]);
+
+  const suggestedExtra = useMemo(() => {
+    if (!focusDebt) return 0;
+    const base = Math.max(10, Math.round(focusDebt.minimum_payment * 0.2 / 5) * 5);
+    return Math.min(base, Math.ceil(focusDebt.balance));
+  }, [focusDebt]);
+
+  const todayAction = useMemo(() => {
+    if (focusDebt && suggestedExtra > 0) {
+      return {
+        title: `Pay ${formatMoney(suggestedExtra)} extra today toward your ${focusDebt.name}`,
+        description: `Every extra dollar on your focus debt shrinks the interest you'll ever pay. One small move, big compounding win.`,
+      };
+    }
+    return actionForDate(new Date());
+  }, [focusDebt, suggestedExtra]);
 
   async function handleCheckin() {
     if (!user) return;
@@ -129,9 +160,14 @@ function Dashboard() {
       toast.error(error.message);
       return;
     }
-    toast.success("Logged. Keep the streak alive.");
+    toast.success("Nice. Streak alive. 🔥");
     setSavedAmount("");
     void loadAll();
+  }
+
+  function handleSkip() {
+    setSkippedToday(true);
+    toast("Skipped for today — see you tomorrow.", { icon: "👋" });
   }
 
   if (loading) {
