@@ -135,13 +135,23 @@ function DebtsPage() {
                       {d.apr}% APR · Min {formatMoney(d.minimum_payment)}/mo
                     </p>
                   </div>
-                  <button
-                    onClick={() => deleteDebt(d.id)}
-                    aria-label="Delete debt"
-                    className="h-9 w-9 rounded-full grid place-items-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
+                  <div className="flex items-center gap-1">
+                    <Link
+                      to="/edit-debt/$id"
+                      params={{ id: d.id }}
+                      className="h-9 w-9 rounded-full grid place-items-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                      aria-label="Edit debt"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Link>
+                    <button
+                      onClick={() => deleteDebt(d.id)}
+                      aria-label="Delete debt"
+                      className="h-9 w-9 rounded-full grid place-items-center text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="mt-4 flex items-baseline justify-between">
