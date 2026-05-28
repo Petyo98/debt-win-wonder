@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { formatMoney, formatMoneyDetailed } from "@/lib/finance";
-import { Trash2, Plus, CheckCircle2 } from "lucide-react";
+import { Trash2, Plus, CheckCircle2, Pencil } from "lucide-react";
 import { DebtPayoffChart } from "@/components/DebtPayoffChart";
 import { Slider } from "@/components/ui/slider";
 
