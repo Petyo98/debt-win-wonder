@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Target, Calendar, ShieldCheck } from "lucide-react";
+import { Sparkles, Target, Calendar, ShieldCheck } from "lucide-react";
+import { WaitlistForm } from "@/components/WaitlistForm";
 
 export const Route = createFileRoute("/")({
   head: () => ({
