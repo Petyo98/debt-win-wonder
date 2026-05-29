@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Target, Calendar, ShieldCheck } from "lucide-react";
+import { Sparkles, Target, Calendar, ShieldCheck } from "lucide-react";
+import { WaitlistForm } from "@/components/WaitlistForm";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -54,13 +55,9 @@ function Landing() {
         </p>
 
         <div className="mt-8 space-y-3">
-          <Link to="/onboarding" className="block">
-            <Button size="lg" className="w-full rounded-2xl h-14 text-base font-semibold shadow-glow">
-              Start free <ArrowRight className="ml-1 h-5 w-5" />
-            </Button>
-          </Link>
+          <WaitlistForm source="hero" />
           <p className="text-center text-xs text-muted-foreground">
-            Takes 60 seconds · No credit card
+            Join the waitlist · Be first when we launch
           </p>
         </div>
 
@@ -112,19 +109,21 @@ function Landing() {
 
       {/* CTA */}
       <section className="mx-auto max-w-md px-5 pb-16">
-        <div className="rounded-3xl bg-foreground text-background p-8 text-center">
-          <p className="text-xs font-bold uppercase tracking-widest text-primary">Free forever</p>
-          <h2 className="font-display text-2xl font-bold mt-3 leading-tight text-balance">
-            The best day to start was yesterday. The next best is today.
+        <div className="rounded-3xl bg-foreground text-background p-8">
+          <p className="text-xs font-bold uppercase tracking-widest text-primary text-center">Coming soon</p>
+          <h2 className="font-display text-2xl font-bold mt-3 leading-tight text-balance text-center">
+            Be first in line when DebtFree opens.
           </h2>
-          <Link to="/onboarding" className="block mt-6">
-            <Button
-              size="lg"
-              className="w-full rounded-2xl h-14 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
-            >
-              Get started — it's free
-            </Button>
-          </Link>
+          <p className="text-sm text-background/70 mt-3 text-center">
+            Leave your email and we'll let you know the moment it's ready.
+          </p>
+          <div className="mt-6">
+            <WaitlistForm variant="dark" source="footer" />
+          </div>
+          <p className="text-center text-xs text-background/60 mt-4">
+            Already have an account?{" "}
+            <Link to="/auth" className="text-primary font-semibold">Sign in</Link>
+          </p>
         </div>
         <p className="text-center text-xs text-muted-foreground mt-6">
           DebtFree · Built for the journey, not the shame.
