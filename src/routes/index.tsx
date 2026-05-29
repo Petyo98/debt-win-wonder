@@ -55,13 +55,9 @@ function Landing() {
         </p>
 
         <div className="mt-8 space-y-3">
-          <Link to="/onboarding" className="block">
-            <Button size="lg" className="w-full rounded-2xl h-14 text-base font-semibold shadow-glow">
-              Start free <ArrowRight className="ml-1 h-5 w-5" />
-            </Button>
-          </Link>
+          <WaitlistForm source="hero" />
           <p className="text-center text-xs text-muted-foreground">
-            Takes 60 seconds · No credit card
+            Join the waitlist · Be first when we launch
           </p>
         </div>
 
