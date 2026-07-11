@@ -105,6 +105,17 @@ export function WaitlistForm({ variant = "light", source = "landing" }: Props) {
           </>
         )}
       </Button>
+      <p className={`text-xs text-center leading-relaxed ${isDark ? "text-background/70" : "text-muted-foreground"}`}>
+        By joining the waitlist, you agree to our{" "}
+        <Link to="/terms" className={`underline underline-offset-2 ${isDark ? "text-background" : "text-primary"}`}>
+          Terms of Service
+        </Link>{" "}
+        and{" "}
+        <Link to="/privacy" className={`underline underline-offset-2 ${isDark ? "text-background" : "text-primary"}`}>
+          Privacy Policy
+        </Link>
+        .
+      </p>
     </form>
   );
 }
