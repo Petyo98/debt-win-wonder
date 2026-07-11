@@ -9,8 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as StrategyRouteImport } from './routes/strategy'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as DebtsRouteImport } from './routes/debts'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -19,6 +21,11 @@ import { Route as AddDebtRouteImport } from './routes/add-debt'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EditDebtIdRouteImport } from './routes/edit-debt.$id'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StrategyRoute = StrategyRouteImport.update({
   id: '/strategy',
   path: '/strategy',
@@ -27,6 +34,11 @@ const StrategyRoute = StrategyRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -72,8 +84,10 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/debts': typeof DebtsRoute
   '/onboarding': typeof OnboardingRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/strategy': typeof StrategyRoute
+  '/terms': typeof TermsRoute
   '/edit-debt/$id': typeof EditDebtIdRoute
 }
 export interface FileRoutesByTo {
@@ -83,8 +97,10 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/debts': typeof DebtsRoute
   '/onboarding': typeof OnboardingRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/strategy': typeof StrategyRoute
+  '/terms': typeof TermsRoute
   '/edit-debt/$id': typeof EditDebtIdRoute
 }
 export interface FileRoutesById {
@@ -95,8 +111,10 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/debts': typeof DebtsRoute
   '/onboarding': typeof OnboardingRoute
+  '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/strategy': typeof StrategyRoute
+  '/terms': typeof TermsRoute
   '/edit-debt/$id': typeof EditDebtIdRoute
 }
 export interface FileRouteTypes {
@@ -108,8 +126,10 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/debts'
     | '/onboarding'
+    | '/privacy'
     | '/profile'
     | '/strategy'
+    | '/terms'
     | '/edit-debt/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -119,8 +139,10 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/debts'
     | '/onboarding'
+    | '/privacy'
     | '/profile'
     | '/strategy'
+    | '/terms'
     | '/edit-debt/$id'
   id:
     | '__root__'
@@ -130,8 +152,10 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/debts'
     | '/onboarding'
+    | '/privacy'
     | '/profile'
     | '/strategy'
+    | '/terms'
     | '/edit-debt/$id'
   fileRoutesById: FileRoutesById
 }
@@ -142,13 +166,22 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   DebtsRoute: typeof DebtsRoute
   OnboardingRoute: typeof OnboardingRoute
+  PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRoute
   StrategyRoute: typeof StrategyRoute
+  TermsRoute: typeof TermsRoute
   EditDebtIdRoute: typeof EditDebtIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/strategy': {
       id: '/strategy'
       path: '/strategy'
@@ -161,6 +194,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -222,8 +262,10 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   DebtsRoute: DebtsRoute,
   OnboardingRoute: OnboardingRoute,
+  PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRoute,
   StrategyRoute: StrategyRoute,
+  TermsRoute: TermsRoute,
   EditDebtIdRoute: EditDebtIdRoute,
 }
 export const routeTree = rootRouteImport
