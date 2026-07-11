@@ -109,8 +109,24 @@ function Landing() {
 
       {/* Footer */}
       <section className="mx-auto max-w-md px-5 pb-16">
+        <div className="mt-6 rounded-2xl border border-border bg-surface p-5">
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            DebtFree helps you identify opportunities to repay debt more efficiently through planning, tracking, and
+            personalized suggestions. We do not provide financial advice, lending services, debt settlement, or credit
+            repair services.
+          </p>
+        </div>
         <p className="text-center text-xs text-muted-foreground mt-6">
           DebtFree · Built for the journey, not the shame.
+        </p>
+        <p className="text-center text-xs text-muted-foreground mt-3 space-x-3">
+          <Link to="/terms" className="hover:text-foreground underline-offset-2 hover:underline">
+            Terms
+          </Link>
+          <span>·</span>
+          <Link to="/privacy" className="hover:text-foreground underline-offset-2 hover:underline">
+            Privacy
+          </Link>
         </p>
       </section>
     </div>
