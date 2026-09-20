@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 
@@ -27,6 +28,8 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const needsConsent = mode === "signup" && !acceptedTerms;
 
   useEffect(() => {
     // Pull onboarding name if present
@@ -56,6 +59,10 @@ function AuthPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (needsConsent) {
+      toast.error("Please accept the Terms of Service and Privacy Policy first.");
+      return;
+    }
     setSubmitting(true);
     try {
       if (mode === "signup") {
@@ -84,6 +91,10 @@ function AuthPage() {
   };
 
   const handleGoogle = async () => {
+    if (needsConsent) {
+      toast.error("Please accept the Terms of Service and Privacy Policy first.");
+      return;
+    }
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,
     });
@@ -117,11 +128,37 @@ function AuthPage() {
           </p>
         </div>
 
+        {mode === "signup" && (
+          <label
+            htmlFor="acceptTerms"
+            className="flex items-start gap-3 rounded-2xl border border-border bg-surface p-4 mb-5 cursor-pointer"
+          >
+            <Checkbox
+              id="acceptTerms"
+              checked={acceptedTerms}
+              onCheckedChange={(v) => setAcceptedTerms(v === true)}
+              className="mt-0.5"
+            />
+            <span className="text-sm text-muted-foreground leading-relaxed">
+              I have read and accept the{" "}
+              <Link to="/terms" className="text-primary font-semibold underline-offset-2 hover:underline">
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy" className="text-primary font-semibold underline-offset-2 hover:underline">
+                Privacy Policy
+              </Link>
+              .
+            </span>
+          </label>
+        )}
+
         <Button
           type="button"
           variant="outline"
           className="w-full h-12 rounded-2xl font-semibold bg-surface border-border"
           onClick={handleGoogle}
+          disabled={needsConsent}
         >
           <svg className="mr-1 h-4 w-4" viewBox="0 0 24 24">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -179,7 +216,7 @@ function AuthPage() {
               className="h-12 rounded-2xl bg-surface text-base"
             />
           </div>
-          <Button type="submit" className="w-full h-14 rounded-2xl font-semibold text-base shadow-glow" disabled={submitting}>
+          <Button type="submit" className="w-full h-14 rounded-2xl font-semibold text-base shadow-glow" disabled={submitting || needsConsent}>
             {submitting ? "Working…" : mode === "signin" ? "Sign in" : "Create account"}
           </Button>
         </form>
