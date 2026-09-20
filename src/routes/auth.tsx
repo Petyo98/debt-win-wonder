@@ -59,6 +59,10 @@ function AuthPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (needsConsent) {
+      toast.error("Please accept the Terms of Service and Privacy Policy first.");
+      return;
+    }
     setSubmitting(true);
     try {
       if (mode === "signup") {
@@ -87,6 +91,10 @@ function AuthPage() {
   };
 
   const handleGoogle = async () => {
+    if (needsConsent) {
+      toast.error("Please accept the Terms of Service and Privacy Policy first.");
+      return;
+    }
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,
     });
