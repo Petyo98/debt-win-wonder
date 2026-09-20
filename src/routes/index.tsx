@@ -1,7 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Target, Calendar, ShieldCheck } from "lucide-react";
 import { WaitlistForm } from "@/components/WaitlistForm";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -20,6 +22,18 @@ export const Route = createFileRoute("/")({
 });
 
 function Landing() {
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    // OAuth (e.g. Google) lands back here — route new users to onboarding once,
+    // returning users straight to the dashboard.
+    if (loading || !user) return;
+    const isNewUser =
+      Date.now() - new Date(user.created_at).getTime() < 2 * 60 * 1000;
+    navigate({ to: isNewUser ? "/onboarding" : "/dashboard" });
+  }, [user, loading, navigate]);
+
   return (
     <div className="min-h-screen bg-background">
       <header className="mx-auto max-w-md px-5 pt-6 flex items-center justify-between">
