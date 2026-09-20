@@ -38,7 +38,13 @@ function Onboarding() {
       } catch {
         // ignore (private mode etc.)
       }
-      navigate({ to: "/auth" });
+      if (user) {
+        // Already signed in (post-signup onboarding) — done, go to dashboard
+        sessionStorage.removeItem("debtfree_just_signed_up");
+        navigate({ to: "/dashboard" });
+      } else {
+        navigate({ to: "/auth" });
+      }
     }
   };
   const back = () => setStep((s) => Math.max(0, s - 1));
