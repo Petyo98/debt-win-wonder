@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,6 +21,7 @@ const STEPS = 4;
 
 function Onboarding() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
   const [strategy, setStrategy] = useState<"snowball" | "avalanche" | null>(null);
@@ -36,7 +38,13 @@ function Onboarding() {
       } catch {
         // ignore (private mode etc.)
       }
-      navigate({ to: "/auth" });
+      if (user) {
+        // Already signed in (post-signup onboarding) — done, go to dashboard
+        sessionStorage.removeItem("debtfree_just_signed_up");
+        navigate({ to: "/dashboard" });
+      } else {
+        navigate({ to: "/auth" });
+      }
     }
   };
   const back = () => setStep((s) => Math.max(0, s - 1));
@@ -167,10 +175,14 @@ function Onboarding() {
             size="lg"
             className="w-full rounded-2xl h-14 text-base font-semibold shadow-glow"
           >
-            {step === STEPS - 1 ? "Create my account" : "Continue"}
+            {step === STEPS - 1
+              ? user
+                ? "Take me to my dashboard"
+                : "Create my account"
+              : "Continue"}
             <ArrowRight className="ml-1 h-5 w-5" />
           </Button>
-          {step === 0 && (
+          {step === 0 && !user && (
             <p className="text-center text-xs text-muted-foreground mt-4">
               Already have an account?{" "}
               <Link to="/auth" className="text-primary font-semibold">Sign in</Link>
