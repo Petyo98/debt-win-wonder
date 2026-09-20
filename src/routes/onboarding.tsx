@@ -175,10 +175,14 @@ function Onboarding() {
             size="lg"
             className="w-full rounded-2xl h-14 text-base font-semibold shadow-glow"
           >
-            {step === STEPS - 1 ? "Create my account" : "Continue"}
+            {step === STEPS - 1
+              ? user
+                ? "Take me to my dashboard"
+                : "Create my account"
+              : "Continue"}
             <ArrowRight className="ml-1 h-5 w-5" />
           </Button>
-          {step === 0 && (
+          {step === 0 && !user && (
             <p className="text-center text-xs text-muted-foreground mt-4">
               Already have an account?{" "}
               <Link to="/auth" className="text-primary font-semibold">Sign in</Link>
