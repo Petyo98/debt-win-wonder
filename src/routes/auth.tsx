@@ -42,7 +42,16 @@ function AuthPage() {
   }, []);
 
   useEffect(() => {
-    if (!loading && user) navigate({ to: "/dashboard" });
+    if (loading || !user) return;
+    // First-ever login (fresh signup or new Google account) → onboarding once
+    const justSignedUp = sessionStorage.getItem("debtfree_just_signed_up") === "1";
+    const isNewUser =
+      Date.now() - new Date(user.created_at).getTime() < 2 * 60 * 1000;
+    if (justSignedUp || isNewUser) {
+      navigate({ to: "/onboarding" });
+    } else {
+      navigate({ to: "/dashboard" });
+    }
   }, [user, loading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -59,6 +68,7 @@ function AuthPage() {
           },
         });
         if (error) throw error;
+        sessionStorage.setItem("debtfree_just_signed_up", "1");
         toast.success("Welcome to DebtFree 🎉");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
