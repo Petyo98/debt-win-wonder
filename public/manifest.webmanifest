@@ -1,0 +1,15 @@
+{
+  "name": "DebtFree — Debt Payoff Coach",
+  "short_name": "DebtFree",
+  "description": "Your mobile debt payoff coach. Daily actions, motivating progress, and a clear path to your debt-free date.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F7FBF9",
+  "theme_color": "#009176",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
