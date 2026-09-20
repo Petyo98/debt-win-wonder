@@ -42,9 +42,16 @@ export const Route = createRootRoute({
       { name: "twitter:description", content: "DebtFree is your mobile debt payoff coach. Daily actions, motivating progress, and a clear path to your debt-free date." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6b36f581-026c-4927-b075-c581e85a99ac/id-preview-1fc7006a--e16827d7-8537-4a8e-95c5-3ff7f9987869.lovable.app-1783808902097.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6b36f581-026c-4927-b075-c581e85a99ac/id-preview-1fc7006a--e16827d7-8537-4a8e-95c5-3ff7f9987869.lovable.app-1783808902097.png" },
+      { name: "theme-color", content: "#009176" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "apple-mobile-web-app-title", content: "DebtFree" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "icon", type: "image/png", href: "/favicon.png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

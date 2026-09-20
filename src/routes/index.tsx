@@ -2,7 +2,6 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Target, Calendar, ShieldCheck } from "lucide-react";
-import { WaitlistForm } from "@/components/WaitlistForm";
 import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/")({
@@ -69,9 +68,13 @@ function Landing() {
         </p>
 
         <div className="mt-8 space-y-3">
-          <WaitlistForm source="hero" />
+          <Link to="/auth" className="block">
+            <Button size="lg" className="w-full rounded-2xl h-14 text-base font-bold shadow-lift">
+              Get started — it's free
+            </Button>
+          </Link>
           <p className="text-center text-xs text-muted-foreground">
-            Join the waitlist · Be first when we launch
+            Free to start · Works on iPhone &amp; Android · No card needed
           </p>
         </div>
 
