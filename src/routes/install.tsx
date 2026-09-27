@@ -202,9 +202,9 @@ function IosSteps() {
   return (
     <div className="space-y-6">
       <p className="text-[10px] uppercase tracking-widest text-primary font-bold flex items-center gap-1.5">
-        <Apple className="h-3.5 w-3.5" /> iPhone & iPad · Safari
+        <Apple className="h-3.5 w-3.5" /> iPhone & iPad · Safari or Chrome
       </p>
-      <Step n={1} title="Open DebtFree in Safari" body="Type the app's address in Safari. Make sure you're on the site itself." />
+      <Step n={1} title="Open DebtFree in Safari or Chrome" body="Type the app's address in your browser. Make sure you're on the site itself." />
       <Step n={2} title="Tap the Share button" body="The square with an arrow pointing up, at the bottom of the screen." />
       <Step n={3} title="Choose “Add to Home Screen”" body="Scroll down the share menu until you see it, then tap it." />
       <Step n={4} title="Tap “Add”" body="Done — the DebtFree icon appears on your home screen and opens full screen." />
