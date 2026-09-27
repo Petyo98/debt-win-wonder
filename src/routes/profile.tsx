@@ -68,6 +68,22 @@ function ProfilePage() {
         <Row icon={<Mail className="h-4 w-4" />} label="Email" value={user?.email ?? "—"} />
       </div>
 
+      <Link
+        to="/install"
+        className="rounded-3xl bg-surface border border-border flex items-center gap-3 px-5 py-4 transition-colors hover:bg-primary-soft/40"
+      >
+        <div className="h-9 w-9 rounded-xl bg-primary-soft text-primary grid place-items-center shrink-0">
+          <Download className="h-4 w-4" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] uppercase tracking-widest text-muted-foreground font-bold">
+            Get the app
+          </p>
+          <p className="font-medium">Install on your phone</p>
+        </div>
+        <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+      </Link>
+
       <Button
         variant="outline"
         className="w-full h-12 rounded-2xl font-semibold border-destructive/30 text-destructive hover:bg-destructive/5 hover:text-destructive"
