@@ -166,8 +166,9 @@ function InstallPage() {
 
         {platform === "ios" && (
           <p className="mt-4 text-xs text-muted-foreground leading-relaxed">
-            Heads up: on iPhone, Chrome can't install web apps — Apple only allows it through
-            Safari. On Android and computer, Chrome (or Edge) works perfectly.
+            Tip: on newer iPhones, Chrome works too — tap the Share button in Chrome and choose
+            "Add to Home Screen". If you don't see it there, open the site in Safari and follow
+            the steps above.
           </p>
         )}
 
