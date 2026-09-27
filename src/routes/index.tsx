@@ -76,6 +76,11 @@ function Landing() {
           <p className="text-center text-xs text-muted-foreground">
             Free to start · Works on iPhone &amp; Android · No card needed
           </p>
+          <p className="text-center text-xs">
+            <Link to="/install" className="text-primary font-semibold underline-offset-2 hover:underline">
+              How to install the app on your phone →
+            </Link>
+          </p>
         </div>
 
         {/* Phone-like preview */}

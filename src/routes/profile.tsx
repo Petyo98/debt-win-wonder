@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { RequireAuth } from "@/components/RequireAuth";
@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { LogOut, User as UserIcon, Mail } from "lucide-react";
+import { LogOut, User as UserIcon, Mail, Download, ChevronRight } from "lucide-react";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
@@ -67,6 +67,22 @@ function ProfilePage() {
         <Row icon={<UserIcon className="h-4 w-4" />} label="Strategy" value={strategy ?? "—"} />
         <Row icon={<Mail className="h-4 w-4" />} label="Email" value={user?.email ?? "—"} />
       </div>
+
+      <Link
+        to="/install"
+        className="rounded-3xl bg-surface border border-border flex items-center gap-3 px-5 py-4 transition-colors hover:bg-primary-soft/40"
+      >
+        <div className="h-9 w-9 rounded-xl bg-primary-soft text-primary grid place-items-center shrink-0">
+          <Download className="h-4 w-4" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] uppercase tracking-widest text-muted-foreground font-bold">
+            Get the app
+          </p>
+          <p className="font-medium">Install on your phone</p>
+        </div>
+        <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+      </Link>
 
       <Button
         variant="outline"
