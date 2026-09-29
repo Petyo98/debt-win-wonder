@@ -16,6 +16,7 @@ import {
 } from "@/lib/finance";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ProjectionDisclaimer } from "@/components/ProjectionDisclaimer";
 
 export const Route = createFileRoute("/strategy")({
   head: () => ({
@@ -150,6 +151,7 @@ function StrategyPage() {
                   )} in interest.`}
             </p>
           </div>
+          <ProjectionDisclaimer />
         </>
       )}
     </div>
@@ -201,10 +203,10 @@ function StrategyCard({
         )}
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <Mini label="Months" value={String(projection.monthsToFreedom)} />
+         <Mini label="Months" value={projection.isPayoffProjected ? String(projection.monthsToFreedom) : "Not projected"} />
         <Mini
           label="Free by"
-          value={projection.payoffDate.toLocaleDateString(undefined, { month: "short", year: "2-digit" })}
+           value={projection.isPayoffProjected ? projection.payoffDate.toLocaleDateString(undefined, { month: "short", year: "2-digit" }) : "Not projected"}
         />
         <Mini label="Interest" value={formatMoney(projection.totalInterest)} />
         <Mini label="Total paid" value={formatMoney(projection.totalPaid)} />

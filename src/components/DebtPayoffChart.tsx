@@ -8,6 +8,7 @@ import {
   YAxis,
 } from "recharts";
 import { formatMoney, project, type Debt } from "@/lib/finance";
+import { ProjectionDisclaimer } from "@/components/ProjectionDisclaimer";
 
 type Props = {
   debt: Debt;
@@ -16,7 +17,7 @@ type Props = {
 };
 
 export function DebtPayoffChart({ debt, extraPerMonth = 0 }: Props) {
-  const { data, monthsToFreedom, totalInterest, payoffDate } = useMemo(() => {
+  const { data, monthsToFreedom, totalInterest, payoffDate, isPayoffProjected } = useMemo(() => {
     const proj = project([debt], debt.minimum_payment + extraPerMonth, "avalanche");
     const start = new Date();
     start.setDate(1);
@@ -34,6 +35,7 @@ export function DebtPayoffChart({ debt, extraPerMonth = 0 }: Props) {
       monthsToFreedom: proj.monthsToFreedom,
       totalInterest: proj.totalInterest,
       payoffDate: proj.payoffDate,
+      isPayoffProjected: proj.isPayoffProjected,
     };
   }, [debt, extraPerMonth]);
 
@@ -49,7 +51,7 @@ export function DebtPayoffChart({ debt, extraPerMonth = 0 }: Props) {
       <div className="flex items-baseline justify-between mb-3 flex-wrap gap-2">
         <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Payoff timeline</p>
         <p className="text-[11px] text-muted-foreground">
-          <span className="font-display font-bold text-foreground">{yearsLabel}</span> ·
+          <span className="font-display font-bold text-foreground">{isPayoffProjected ? yearsLabel : "Not projected"}</span> ·
           {" "}<span className="font-display font-bold text-foreground">{formatMoney(totalInterest)}</span> interest
         </p>
       </div>
@@ -97,8 +99,9 @@ export function DebtPayoffChart({ debt, extraPerMonth = 0 }: Props) {
         </ResponsiveContainer>
       </div>
       <p className="text-[11px] text-muted-foreground mt-1 text-right">
-        Free by {payoffDate.toLocaleDateString(undefined, { month: "short", year: "numeric" })}
+        {isPayoffProjected ? `Free by ${payoffDate.toLocaleDateString(undefined, { month: "short", year: "numeric" })}` : "Balance remains after 50 years at these settings"}
       </p>
+      <div className="mt-3"><ProjectionDisclaimer /></div>
     </div>
   );
 }

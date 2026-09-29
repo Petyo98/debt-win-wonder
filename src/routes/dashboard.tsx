@@ -20,6 +20,7 @@ import {
   totalMinimums,
 } from "@/lib/finance";
 import { Flame, CheckCircle2, ArrowRight, Plus, Sparkles, Trophy } from "lucide-react";
+import { ProjectionDisclaimer } from "@/components/ProjectionDisclaimer";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -226,10 +227,10 @@ function Dashboard() {
             <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary/40 blur-3xl" />
             <p className="text-xs font-semibold uppercase tracking-widest text-primary">Debt-free by</p>
             <p className="font-display text-4xl font-extrabold mt-1">
-              {projection.payoffDate.toLocaleDateString(undefined, { month: "short", year: "numeric" })}
+               {projection.isPayoffProjected ? projection.payoffDate.toLocaleDateString(undefined, { month: "short", year: "numeric" }) : "Not projected"}
             </p>
             <p className="text-sm opacity-70 mt-1">
-              {projection.monthsToFreedom} months · {formatMoney(balanceSum)} to go
+               {projection.isPayoffProjected ? `${projection.monthsToFreedom} months` : "Beyond 50-year model"} · {formatMoney(balanceSum)} to go
             </p>
 
             <div className="mt-5">
@@ -246,10 +247,12 @@ function Dashboard() {
             </div>
           </div>
 
+          <ProjectionDisclaimer />
+
           {/* Stat tiles */}
           <div className="grid grid-cols-3 gap-3">
             <Tile label="Total debt" value={formatMoney(balanceSum)} />
-            <Tile label="Interest saved" value={formatMoney(interestSaved)} hint="vs minimums" />
+            <Tile label="Interest saved" value={projection.isPayoffProjected && baselineProjection.isPayoffProjected ? formatMoney(interestSaved) : "—"} hint="vs minimums" />
             <Tile label="Paid off" value={`${paidOffCount}`} hint="cleared" />
           </div>
 
@@ -351,7 +354,7 @@ function Dashboard() {
             />
 
             <div className="grid grid-cols-2 gap-3 mt-4">
-              <Mini label="Months" value={String(projection.monthsToFreedom)} />
+               <Mini label="Months" value={projection.isPayoffProjected ? String(projection.monthsToFreedom) : "Not projected"} />
               <Mini label="Interest" value={formatMoney(projection.totalInterest)} />
             </div>
           </div>
