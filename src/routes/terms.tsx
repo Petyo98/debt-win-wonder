@@ -85,6 +85,13 @@ function TermsPage() {
               updated Terms.
             </p>
           </section>
+
+          <section>
+            <h2 className="font-display font-bold text-xl">Contact Us</h2>
+            <p className="mt-2">
+              For questions about these Terms or the Service, contact: <strong>debtfree2626@outlook.com</strong>.
+            </p>
+          </section>
         </div>
       </div>
     </div>
