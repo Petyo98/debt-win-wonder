@@ -52,7 +52,7 @@ export function DebtPayoffChart({ debt, extraPerMonth = 0 }: Props) {
         <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Payoff timeline</p>
         <p className="text-[11px] text-muted-foreground">
           <span className="font-display font-bold text-foreground">{isPayoffProjected ? yearsLabel : "Not projected"}</span> ·
-          {" "}<span className="font-display font-bold text-foreground">{formatMoney(totalInterest)}</span> interest
+          {" "}<span className="font-display font-bold text-foreground">{formatMoney(totalInterest)}</span> {isPayoffProjected ? "interest" : "interest in model"}
         </p>
       </div>
       <div className="h-36 w-full">

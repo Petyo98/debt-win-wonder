@@ -355,7 +355,7 @@ function Dashboard() {
 
             <div className="grid grid-cols-2 gap-3 mt-4">
                <Mini label="Months" value={projection.isPayoffProjected ? String(projection.monthsToFreedom) : "Not projected"} />
-              <Mini label="Interest" value={formatMoney(projection.totalInterest)} />
+               <Mini label={projection.isPayoffProjected ? "Interest" : "Interest in model"} value={formatMoney(projection.totalInterest)} />
             </div>
           </div>
 

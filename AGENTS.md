@@ -1,0 +1,1 @@
+Keep the payoff calculation assumptions in `src/lib/finance.ts` aligned with the explanatory Terms and shared `ProjectionDisclaimer` shown beside results, so financial estimates remain consistently qualified.
