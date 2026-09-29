@@ -26,6 +26,10 @@ export const Route = createFileRoute("/dashboard")({
     meta: [
       { title: "Home · DebtFree" },
       { name: "description", content: "Your daily debt-payoff dashboard." },
+      { property: "og:title", content: "Home · DebtFree" },
+      { property: "og:description", content: "Your daily debt-payoff dashboard." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: () => (

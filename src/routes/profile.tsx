@@ -10,7 +10,14 @@ import { LogOut, User as UserIcon, Mail, Download, ChevronRight } from "lucide-r
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
-    meta: [{ title: "You · DebtFree" }, { name: "description", content: "Your profile and settings." }],
+    meta: [
+      { title: "You · DebtFree" },
+      { name: "description", content: "Your profile and settings." },
+      { property: "og:title", content: "You · DebtFree" },
+      { property: "og:description", content: "Your profile and settings." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
   }),
   component: () => (
     <RequireAuth>

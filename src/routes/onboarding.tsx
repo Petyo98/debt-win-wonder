@@ -12,6 +12,10 @@ export const Route = createFileRoute("/onboarding")({
     meta: [
       { title: "Welcome to DebtFree" },
       { name: "description", content: "Set up your debt-free journey in 60 seconds." },
+      { property: "og:title", content: "Welcome to DebtFree" },
+      { property: "og:description", content: "Set up your debt-free journey in 60 seconds." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Onboarding,

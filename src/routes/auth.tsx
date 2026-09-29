@@ -15,6 +15,10 @@ export const Route = createFileRoute("/auth")({
     meta: [
       { title: "Sign in · DebtFree" },
       { name: "description", content: "Sign in or create your DebtFree account." },
+      { property: "og:title", content: "Sign in · DebtFree" },
+      { property: "og:description", content: "Sign in or create your DebtFree account." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AuthPage,

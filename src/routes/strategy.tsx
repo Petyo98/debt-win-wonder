@@ -22,6 +22,10 @@ export const Route = createFileRoute("/strategy")({
     meta: [
       { title: "Plan · DebtFree" },
       { name: "description", content: "Compare snowball and avalanche payoff strategies." },
+      { property: "og:title", content: "Plan · DebtFree" },
+      { property: "og:description", content: "Compare snowball and avalanche payoff strategies." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: () => (

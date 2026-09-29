@@ -22,7 +22,7 @@ function PrivacyPage() {
           ← Back
         </Link>
         <h1 className="font-display text-4xl font-extrabold tracking-tight mt-6">Privacy Policy</h1>
-        <p className="text-sm text-muted-foreground mt-2">Effective and Last Updated: September 20, 2026</p>
+        <p className="text-sm text-muted-foreground mt-2">Effective and Last Updated: September 29, 2026</p>
 
         <div className="prose prose-sm mt-8 space-y-6 text-foreground">
           <p>
@@ -85,6 +85,12 @@ function PrivacyPage() {
               DebtFree does not currently connect to bank accounts and does not ask for or store bank-login
               credentials, full payment-card numbers, or government identification numbers. Please do not enter such
               information in debt names, payment notes, or other free-text fields.
+            </p>
+            <p className="mt-2">
+              You can visit public pages without creating an account. You choose what information to enter in the
+              Service; providing a name is optional. An email address and sign-in details
+              are needed to create and access an account, and the debt details you enter are needed to generate a
+              payoff plan. If you do not provide information needed for a feature, that feature may not be available.
             </p>
           </section>
 
@@ -165,6 +171,11 @@ function PrivacyPage() {
               technologies may prevent parts of the Service from working correctly.
             </p>
             <p className="mt-2">
+              You can manage or clear browser storage in your browser settings. Clearing it may sign you out or remove
+              locally saved preferences; it does not by itself delete information saved to your account. DebtFree does
+              not offer an optional “remember me” cookie setting.
+            </p>
+            <p className="mt-2">
               DebtFree does not currently use third-party advertising cookies or an in-app advertising network. If we
               later add non-essential analytics or advertising technologies, we will update this Policy and obtain
               consent where required before using them.
@@ -186,7 +197,7 @@ function PrivacyPage() {
             </ul>
             <p className="mt-2">
               We do not disclose personal information to data brokers and do not permit providers to use your debt
-              information for their own marketing.
+              information for their own marketing. We do not sell, trade, or rent your personal information to others.
             </p>
           </section>
 
@@ -218,6 +229,13 @@ function PrivacyPage() {
               Retention periods depend on the nature of the information, why it was collected, security needs, and
               applicable legal requirements. Residual copies may remain temporarily in protected backups until they
               are overwritten through the normal backup cycle.
+            </p>
+            <p className="mt-2">
+              To request deletion of your account and associated information, email debtfree2626@outlook.com from
+              your account email address. We may ask you to verify your identity before processing the request.
+              Account deletion is not currently a self-service option in the app. Removing the app from your device
+              or clearing browser storage does not delete your account. Deletion may not be reversible, subject to
+              the limited retention exceptions above.
             </p>
           </section>
 
