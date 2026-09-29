@@ -88,7 +88,7 @@ function PrivacyPage() {
             </p>
             <p className="mt-2">
               You can visit public pages without creating an account. You choose what information to enter in the
-              Service; providing a name and joining the waitlist are optional. An email address and sign-in details
+              Service; providing a name is optional. An email address and sign-in details
               are needed to create and access an account, and the debt details you enter are needed to generate a
               payoff plan. If you do not provide information needed for a feature, that feature may not be available.
             </p>
