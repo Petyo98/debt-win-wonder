@@ -5,6 +5,10 @@ export const Route = createFileRoute("/terms")({
     meta: [
       { title: "Terms of Service — DebtFree" },
       { name: "description", content: "Terms of Service governing use of the DebtFree platform." },
+      { property: "og:title", content: "Terms of Service — DebtFree" },
+      { property: "og:description", content: "Terms of Service governing use of the DebtFree platform." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: TermsPage,

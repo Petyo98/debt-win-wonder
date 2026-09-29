@@ -15,6 +15,8 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:title", content: "DebtFree — Pay off debt faster, one calm day at a time" },
       { property: "og:description", content: "DebtFree is your mobile debt payoff coach. Daily actions, motivating progress, and a clear path to your debt-free date." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Landing,
