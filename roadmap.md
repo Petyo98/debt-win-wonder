@@ -1,0 +1,3 @@
+- [x] Adapt relevant example terms to DebtFree without importing unrelated claims.
+- [x] Explain future subscription billing and related data accurately in Terms and Privacy.
+- [x] Verify the two legal pages render and the preview reports no build errors.
