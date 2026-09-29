@@ -143,6 +143,22 @@ function PrivacyPage() {
           </section>
 
           <section>
+            <h2 className="font-display font-bold text-xl">Future Subscription Payments</h2>
+            <p className="mt-2">
+              DebtFree does not currently sell subscriptions or collect subscription payment details. If we introduce
+              paid plans, we will update this Policy before accepting payments to identify the payment provider,
+              explain the actual information collected and shared, and describe its purposes and retention.
+            </p>
+            <p className="mt-2">
+              A future subscription may require billing contact details, country or billing address, a payment method
+              supplied to a payment provider, and records such as plan, payment status, transaction reference, and
+              invoices. Such information would be used to process charges, manage access, respond to billing questions,
+              prevent fraud, and meet legal obligations. We do not currently request or store full payment-card numbers.
+              Your debt payment logs are planning records you enter, not payments processed by DebtFree.
+            </p>
+          </section>
+
+          <section>
             <h2 className="font-display font-bold text-xl">Sign-In Providers and Service Providers</h2>
             <p className="mt-2">
               We use carefully selected providers to operate the Service. They may process personal data only as
