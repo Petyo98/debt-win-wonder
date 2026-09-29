@@ -240,7 +240,7 @@ function PrivacyPage() {
             </ul>
             <p className="mt-2">
               We do not currently sell personal data, share it for cross-context behavioral advertising, or use it for
-              targeted advertising. To exercise a right, contact <strong>emailexample</strong>. We may need to verify
+              targeted advertising. To exercise a right, contact <strong>debtfree2626@outlook.com</strong>. We may need to verify
               your identity before completing a request. Authorized agents may submit requests where local law
               permits. We will respond within the period required by applicable law.
             </p>
@@ -304,10 +304,7 @@ function PrivacyPage() {
             <h2 className="font-display font-bold text-xl">Contact Us</h2>
             <p className="mt-2">
               For privacy questions, complaints, or requests to access, correct, export, or delete your information,
-              contact: <strong>emailexample</strong>.
-            </p>
-            <p className="mt-2 text-muted-foreground">
-              Important: this placeholder must be replaced with a monitored email address before wider public launch.
+              contact: <strong>debtfree2626@outlook.com</strong>.
             </p>
           </section>
         </div>
