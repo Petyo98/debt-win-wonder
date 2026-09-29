@@ -45,8 +45,7 @@ function PrivacyPage() {
               Bulgarian data-protection law where they apply.
             </p>
             <p className="mt-2">
-              Privacy contact: <strong>emailexample</strong>. This is a temporary contact placeholder and will be
-              replaced with the official privacy email before the Service&apos;s wider public launch.
+              Privacy contact: <strong>debtfree2626@outlook.com</strong>.
             </p>
           </section>
 
