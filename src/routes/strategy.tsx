@@ -16,6 +16,7 @@ import {
 } from "@/lib/finance";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ProjectionDisclaimer } from "@/components/ProjectionDisclaimer";
 
 export const Route = createFileRoute("/strategy")({
   head: () => ({
@@ -72,6 +73,7 @@ function StrategyPage() {
   const better: Strategy =
     compared.avalanche.totalInterest < compared.snowball.totalInterest ? "avalanche" : "snowball";
   const interestSaved = Math.abs(compared.snowball.totalInterest - compared.avalanche.totalInterest);
+  const comparable = compared.snowball.isPayoffProjected && compared.avalanche.isPayoffProjected;
 
   async function saveStrategy(s: Strategy) {
     setStrategy(s);
@@ -126,7 +128,7 @@ function StrategyPage() {
               title="Snowball"
               subtitle="Smallest balance first"
               projection={compared.snowball}
-              isBetter={better === "snowball"}
+              isBetter={comparable && interestSaved >= 1 && better === "snowball"}
               isSelected={strategy === "snowball"}
               onSelect={() => saveStrategy("snowball")}
             />
@@ -134,7 +136,7 @@ function StrategyPage() {
               title="Avalanche"
               subtitle="Highest APR first"
               projection={compared.avalanche}
-              isBetter={better === "avalanche"}
+              isBetter={comparable && interestSaved >= 1 && better === "avalanche"}
               isSelected={strategy === "avalanche"}
               onSelect={() => saveStrategy("avalanche")}
             />
@@ -143,13 +145,16 @@ function StrategyPage() {
           <div className="rounded-3xl bg-foreground text-background p-6">
             <p className="text-[10px] font-bold uppercase tracking-widest text-primary">The verdict</p>
             <p className="font-display text-xl font-extrabold mt-2 leading-tight">
-              {interestSaved < 1
+               {!comparable
+                 ? "A payoff is not projected for at least one plan within 50 years. Review your payment amounts."
+                 : interestSaved < 1
                 ? "Either path costs about the same — pick the one that feels right."
                 : `${better === "avalanche" ? "Avalanche" : "Snowball"} saves you ${formatMoney(
                     interestSaved
                   )} in interest.`}
             </p>
           </div>
+          <ProjectionDisclaimer />
         </>
       )}
     </div>
@@ -201,13 +206,13 @@ function StrategyCard({
         )}
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <Mini label="Months" value={String(projection.monthsToFreedom)} />
+         <Mini label="Months" value={projection.isPayoffProjected ? String(projection.monthsToFreedom) : "Not projected"} />
         <Mini
           label="Free by"
-          value={projection.payoffDate.toLocaleDateString(undefined, { month: "short", year: "2-digit" })}
+           value={projection.isPayoffProjected ? projection.payoffDate.toLocaleDateString(undefined, { month: "short", year: "2-digit" }) : "Not projected"}
         />
-        <Mini label="Interest" value={formatMoney(projection.totalInterest)} />
-        <Mini label="Total paid" value={formatMoney(projection.totalPaid)} />
+        <Mini label={projection.isPayoffProjected ? "Interest" : "Interest in model"} value={formatMoney(projection.totalInterest)} />
+        <Mini label={projection.isPayoffProjected ? "Total paid" : "Paid in model"} value={formatMoney(projection.totalPaid)} />
       </div>
       {!isSelected && (
         <Button asChild={false} className="mt-5 w-full rounded-2xl h-11 font-semibold pointer-events-none">

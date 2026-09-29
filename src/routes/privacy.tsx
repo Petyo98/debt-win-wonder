@@ -59,12 +59,14 @@ function PrivacyPage() {
               </li>
               <li>
                 <strong>Financial planning information:</strong> debt names, balances, interest rates, minimum and
-                extra payment amounts, remaining months, payment records, notes, payoff strategy, and projected
-                payoff dates. This information is entered by you and is not obtained directly from a bank.
+                extra payment amounts, remaining months, payments you log, and payoff strategy. We use this information
+                to calculate estimates and display projected payoff dates. This information is entered by you and is
+                not obtained directly from a bank. The app does not currently ask for or store your income.
               </li>
               <li>
                 <strong>Progress and preference information:</strong> daily check-ins, actions marked complete,
-                amounts reported as saved, goals, preferred payoff strategy, and onboarding answers.
+                amounts reported as saved, and preferred payoff strategy. Onboarding answers such as your name and
+                goal may be stored on your device.
               </li>
               <li>
                 <strong>Waitlist or contact information:</strong> name, email address, source, and information you
@@ -91,6 +93,15 @@ function PrivacyPage() {
               Service; providing a name is optional. An email address and sign-in details
               are needed to create and access an account, and the debt details you enter are needed to generate a
               payoff plan. If you do not provide information needed for a feature, that feature may not be available.
+            </p>
+            <p className="mt-2">
+              Your account details, debt records, logged debt payments, check-ins, and saved strategy are sent to and
+              stored in our cloud service so you can access them when signed in. They are not kept only on your phone.
+              Payoff projections are calculated from this information in your browser; we do not connect to your bank
+              or transfer money to creditors. Debt balances and rates can feel highly sensitive even though they are
+              not automatically a special category of personal data under the GDPR. We limit access through
+              authenticated accounts and account-based access controls, and use this data to provide your plan, not
+              to sell it or target advertisements.
             </p>
           </section>
 

@@ -48,7 +48,30 @@ function TermsPage() {
             </p>
             <p className="mt-2">
               Any information provided by DebtFree is for informational and educational purposes only and should not be
-              relied upon as professional advice.
+              relied upon as professional financial, legal, or tax advice. Calculations are estimates, not promises;
+              check your lender&apos;s statements and seek qualified advice where needed before making decisions.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="font-display font-bold text-xl">How Payoff Estimates Are Calculated</h2>
+            <p className="mt-2">
+              The forecast starts with the balances, annual interest rates (APR), and monthly minimum payments you
+              enter for active debts. It assumes each APR stays fixed and adds interest once per month at balance ×
+              APR ÷ 12 before that month&apos;s payment. It then pays each debt&apos;s entered minimum, up to the
+              amount owed, and puts the remaining monthly budget toward debts in snowball order (smallest balance
+              first) or avalanche order (highest APR first). When a debt is paid, any unused amount in the same
+              monthly budget is redirected to the next debt. Extra monthly amounts shown in the planner are assumed
+              to be paid every month; moving a slider is a hypothetical scenario, not a payment to a lender.
+            </p>
+            <p className="mt-2">
+              Calculations use unrounded values internally; displayed currency amounts are rounded for presentation
+              (usually to whole dollars). The estimated payoff month is measured from the current month and the
+              simulation stops after 600 months; if a balance remains, no payoff date is projected. The model does
+              not include lender-specific compounding, daily accrual, fees, variable rates, changing minimums,
+              payment due dates, missed payments, taxes, or any term not entered into the app. Actual lender
+              calculations and statements may differ, including their cent-rounding rules. The app does not check
+              your figures with your lender or move money on your behalf.
             </p>
           </section>
 
@@ -144,9 +167,12 @@ function TermsPage() {
           <section>
             <h2 className="font-display font-bold text-xl">Limitation of Liability</h2>
             <p className="mt-2">
-              DebtFree shall not be liable for any losses, damages, or financial decisions resulting from the use of the
-              platform to the extent permitted by applicable law. Nothing here excludes liability that cannot legally
-              be excluded or limits your mandatory consumer rights.
+              To the extent permitted by applicable law, DebtFree is not responsible for losses caused by inaccurate
+              information you enter, differences between estimates and a lender&apos;s actual terms, or decisions
+              made without verifying those terms. We do not guarantee uninterrupted availability or a particular
+              financial result. Nothing in these Terms excludes or limits liability that cannot legally be excluded,
+              including liability for fraud, intentional misconduct, or other non-excludable obligations, or limits
+              your mandatory consumer rights.
             </p>
           </section>
 

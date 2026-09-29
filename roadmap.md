@@ -1,3 +1,7 @@
 - [x] Adapt relevant example terms to DebtFree without importing unrelated claims.
 - [x] Explain future subscription billing and related data accurately in Terms and Privacy.
 - [x] Verify the two legal pages render and the preview reports no build errors.
+- [x] Explain actual projection assumptions and reasonable liability terms.
+- [x] Clarify cloud storage of sensitive financial planning data, with no local-only claim.
+- [x] Show a concise warning alongside payoff results and avoid claiming payoff at the 600-month cap.
+- [x] Verify legal pages and result screens.

@@ -12,6 +12,7 @@ export type Strategy = "snowball" | "avalanche";
 
 export type Projection = {
   monthsToFreedom: number;
+  isPayoffProjected: boolean;
   totalInterest: number;
   totalPaid: number;
   payoffDate: Date;
@@ -65,6 +66,7 @@ export function project(
   if (debts.length === 0) {
     return {
       monthsToFreedom: 0,
+      isPayoffProjected: true,
       totalInterest: 0,
       totalPaid: 0,
       payoffDate: new Date(),
@@ -131,6 +133,7 @@ export function project(
 
   return {
     monthsToFreedom: month,
+    isPayoffProjected: debts.every((d) => d.balance <= 0.01),
     totalInterest,
     totalPaid,
     payoffDate,
