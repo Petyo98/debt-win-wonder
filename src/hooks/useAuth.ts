@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { flushPendingConsent } from "@/lib/consent";
 
 export function useAuth() {
   const [session, setSession] = useState<Session | null>(null);
@@ -12,6 +13,7 @@ export function useAuth() {
     const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
       setSession(s);
       setUser(s?.user ?? null);
+      if (s) setTimeout(() => void flushPendingConsent(), 0);
     });
     // 2. Then fetch existing session
     supabase.auth.getSession().then(({ data: { session: s } }) => {

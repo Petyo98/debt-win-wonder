@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
+import { markPendingConsent, TERMS_VERSION } from "@/lib/consent";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -76,7 +77,11 @@ function AuthPage() {
           password,
           options: {
             emailRedirectTo: `${window.location.origin}/dashboard`,
-            data: { display_name: displayName || email.split("@")[0] },
+            data: {
+              display_name: displayName || email.split("@")[0],
+              consent_given: true,
+              terms_version: TERMS_VERSION,
+            },
           },
         });
         if (error) throw error;
@@ -100,6 +105,7 @@ function AuthPage() {
       toast.error("Please accept the Terms of Service and Privacy Policy first.");
       return;
     }
+    if (mode === "signup") markPendingConsent();
     const result = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: window.location.origin,
     });
