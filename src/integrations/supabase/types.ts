@@ -126,24 +126,36 @@ export type Database = {
       }
       profiles: {
         Row: {
+          age_confirmed_at: string | null
           created_at: string
           display_name: string | null
           id: string
           preferred_strategy: string
+          privacy_accepted_at: string | null
+          terms_accepted_at: string | null
+          terms_version: string | null
           updated_at: string
         }
         Insert: {
+          age_confirmed_at?: string | null
           created_at?: string
           display_name?: string | null
           id: string
           preferred_strategy?: string
+          privacy_accepted_at?: string | null
+          terms_accepted_at?: string | null
+          terms_version?: string | null
           updated_at?: string
         }
         Update: {
+          age_confirmed_at?: string | null
           created_at?: string
           display_name?: string | null
           id?: string
           preferred_strategy?: string
+          privacy_accepted_at?: string | null
+          terms_accepted_at?: string | null
+          terms_version?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -177,7 +189,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      record_consent: { Args: { _terms_version: string }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never
