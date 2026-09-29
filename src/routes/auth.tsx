@@ -29,7 +29,8 @@ function AuthPage() {
   const [displayName, setDisplayName] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const needsConsent = mode === "signup" && !acceptedTerms;
+  const [isAdult, setIsAdult] = useState(false);
+  const needsConsent = mode === "signup" && (!acceptedTerms || !isAdult);
 
   useEffect(() => {
     // Pull onboarding name if present
@@ -127,6 +128,23 @@ function AuthPage() {
               : "Save your progress and unlock daily actions."}
           </p>
         </div>
+
+        {mode === "signup" && (
+          <label
+            htmlFor="isAdult"
+            className="flex items-start gap-3 rounded-2xl border border-border bg-surface p-4 mb-3 cursor-pointer"
+          >
+            <Checkbox
+              id="isAdult"
+              checked={isAdult}
+              onCheckedChange={(v) => setIsAdult(v === true)}
+              className="mt-0.5"
+            />
+            <span className="text-sm text-muted-foreground leading-relaxed">
+              I confirm that I am at least 18 years old.
+            </span>
+          </label>
+        )}
 
         {mode === "signup" && (
           <label
