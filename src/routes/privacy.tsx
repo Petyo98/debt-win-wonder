@@ -276,8 +276,8 @@ function PrivacyPage() {
           <section>
             <h2 className="font-display font-bold text-xl">Children&apos;s Privacy</h2>
             <p className="mt-2">
-              DebtFree is intended for adults and is not directed to children under 16. We do not knowingly collect
-              personal data from anyone under 16. If you believe a child has provided us with personal data, contact us
+              DebtFree is intended for adults and is not directed to children under 18. We do not knowingly collect
+              personal data from anyone under 18. If you believe a child has provided us with personal data, contact us
               so we can investigate and delete it where appropriate.
             </p>
           </section>

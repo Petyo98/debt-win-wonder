@@ -52,6 +52,14 @@ function TermsPage() {
           </section>
 
           <section>
+            <h2 className="font-display font-bold text-xl">Eligibility</h2>
+            <p className="mt-2">
+              You must be at least 18 years old to create an account or use DebtFree. By using the platform, you confirm
+              that you are 18 or older.
+            </p>
+          </section>
+
+          <section>
             <h2 className="font-display font-bold text-xl">User Responsibility</h2>
             <p className="mt-2">Users remain solely responsible for:</p>
             <ul className="list-disc pl-6 mt-2 space-y-1">
