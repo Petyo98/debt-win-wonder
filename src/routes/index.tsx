@@ -137,10 +137,10 @@ function Landing() {
             personalized suggestions. We do not provide financial advice, lending services, debt settlement, or credit
             repair services.
           </p>
+          <p className="text-xs text-muted-foreground leading-relaxed mt-2">
+            Questions or feedback? Contact us at <strong>debtfree2626@outlook.com</strong>.
+          </p>
         </div>
-        <p className="text-center text-xs text-muted-foreground mt-6">
-          DebtFree · Built for the journey, not the shame.
-        </p>
         <p className="text-center text-xs text-muted-foreground mt-3 space-x-3">
           <Link to="/terms" className="hover:text-foreground underline-offset-2 hover:underline">
             Terms
