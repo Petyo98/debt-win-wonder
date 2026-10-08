@@ -88,7 +88,7 @@ function EditDebtPage() {
         remaining_months: remainingMonths ? Number(remainingMonths) : null,
         extra_payment: Number(extraPayment),
         payment_day: paymentDay ? Number(paymentDay) : null,
-        ...(paymentDay !== origPaymentDay ? { last_processed_due: new Date().toISOString().slice(0, 10) } : {}),
+        ...(paymentDay !== origPaymentDay ? { last_processed_due: new Date(Date.now() - 86400000).toISOString().slice(0, 10) } : {}),
       })
       .eq("id", id);
     setBusy(false);

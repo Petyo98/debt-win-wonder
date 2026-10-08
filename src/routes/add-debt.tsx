@@ -58,7 +58,7 @@ function AddDebtPage() {
       minimum_payment: Number(minPay),
       remaining_months: remainingMonths ? Number(remainingMonths) : null,
       payment_day: paymentDay ? Number(paymentDay) : null,
-      last_processed_due: new Date().toISOString().slice(0, 10),
+      last_processed_due: new Date(Date.now() - 86400000).toISOString().slice(0, 10),
     });
     setBusy(false);
     if (error) {
