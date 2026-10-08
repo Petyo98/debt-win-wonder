@@ -208,7 +208,7 @@ function AddDebtPage() {
               className="h-12 rounded-2xl bg-surface text-base font-display font-bold"
             />
             <p className="text-xs text-muted-foreground">
-              On this day each month we apply your payment (minimum + extra): the interest part is covered first and only the principal part reduces your balance.
+              On this day each month we apply your minimum payment: the interest part is covered first and only the principal part reduces your balance.
             </p>
           </div>
 

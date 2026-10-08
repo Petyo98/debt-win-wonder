@@ -242,7 +242,7 @@ function EditDebtPage() {
               className="h-12 rounded-2xl bg-surface text-base font-display font-bold"
             />
             <p className="text-xs text-muted-foreground">
-              On this day each month we apply your payment (minimum + extra): the interest part is covered first and only the principal part reduces your balance.
+              On this day each month we apply your minimum payment: the interest part is covered first and only the principal part reduces your balance.
             </p>
           </div>
 
@@ -285,6 +285,9 @@ function EditDebtPage() {
                 className="h-12 rounded-2xl bg-surface text-base pl-8 font-display font-bold"
               />
             </div>
+            <p className="text-xs text-muted-foreground">
+              Used only to visualize faster payoff in the charts — it is not added to your scheduled payment.
+            </p>
           </div>
 
           {/* Actions */}
