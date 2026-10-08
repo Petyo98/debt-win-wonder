@@ -49,8 +49,10 @@ export type Database = {
           extra_payment: number
           id: string
           is_paid_off: boolean
+          last_processed_due: string | null
           minimum_payment: number
           name: string
+          payment_day: number | null
           remaining_months: number | null
           starting_balance: number
           updated_at: string
@@ -63,8 +65,10 @@ export type Database = {
           extra_payment?: number
           id?: string
           is_paid_off?: boolean
+          last_processed_due?: string | null
           minimum_payment?: number
           name: string
+          payment_day?: number | null
           remaining_months?: number | null
           starting_balance: number
           updated_at?: string
@@ -77,8 +81,10 @@ export type Database = {
           extra_payment?: number
           id?: string
           is_paid_off?: boolean
+          last_processed_due?: string | null
           minimum_payment?: number
           name?: string
+          payment_day?: number | null
           remaining_months?: number | null
           starting_balance?: number
           updated_at?: string
@@ -92,8 +98,10 @@ export type Database = {
           created_at: string
           debt_id: string
           id: string
+          interest_part: number | null
           note: string | null
           paid_on: string
+          principal_part: number | null
           user_id: string
         }
         Insert: {
@@ -101,8 +109,10 @@ export type Database = {
           created_at?: string
           debt_id: string
           id?: string
+          interest_part?: number | null
           note?: string | null
           paid_on?: string
+          principal_part?: number | null
           user_id: string
         }
         Update: {
@@ -110,8 +120,10 @@ export type Database = {
           created_at?: string
           debt_id?: string
           id?: string
+          interest_part?: number | null
           note?: string | null
           paid_on?: string
+          principal_part?: number | null
           user_id?: string
         }
         Relationships: [
@@ -189,6 +201,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      process_due_payments: { Args: never; Returns: number }
       record_consent: { Args: { _terms_version: string }; Returns: undefined }
     }
     Enums: {
