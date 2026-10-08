@@ -69,6 +69,7 @@ function Dashboard() {
 
   async function loadAll() {
     setLoading(true);
+    await supabase.rpc("process_due_payments");
     const [{ data: prof }, { data: debtRows }, { data: ciRows }, { count: paidCount }] = await Promise.all([
       supabase.from("profiles").select("display_name, preferred_strategy").eq("id", user!.id).maybeSingle(),
       supabase.from("debts").select("*").eq("user_id", user!.id).eq("is_paid_off", false).order("balance"),

@@ -39,6 +39,8 @@ function EditDebtPage() {
   const [minPay, setMinPay] = useState("");
   const [remainingMonths, setRemainingMonths] = useState("");
   const [extraPayment, setExtraPayment] = useState("");
+  const [paymentDay, setPaymentDay] = useState("");
+  const [origPaymentDay, setOrigPaymentDay] = useState("");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -60,6 +62,9 @@ function EditDebtPage() {
       setMinPay(String(data.minimum_payment));
       setRemainingMonths(data.remaining_months ? String(data.remaining_months) : "");
       setExtraPayment(String((data as { extra_payment?: number }).extra_payment ?? 0));
+      const pd = data.payment_day ? String(data.payment_day) : "";
+      setPaymentDay(pd);
+      setOrigPaymentDay(pd);
       setLoading(false);
     }
     void load();
@@ -82,6 +87,8 @@ function EditDebtPage() {
         minimum_payment: Number(minPay),
         remaining_months: remainingMonths ? Number(remainingMonths) : null,
         extra_payment: Number(extraPayment),
+        payment_day: paymentDay ? Number(paymentDay) : null,
+        ...(paymentDay !== origPaymentDay ? { last_processed_due: new Date().toISOString().slice(0, 10) } : {}),
       })
       .eq("id", id);
     setBusy(false);
@@ -99,7 +106,8 @@ function EditDebtPage() {
     Number(balance) >= 0 &&
     apr !== "" &&
     minPay !== "" &&
-    Number(minPay) >= 0;
+    Number(minPay) >= 0 &&
+    (paymentDay === "" || (Number(paymentDay) >= 1 && Number(paymentDay) <= 31));
 
   if (loading) {
     return (
@@ -214,6 +222,28 @@ function EditDebtPage() {
                 className="h-12 rounded-2xl bg-surface text-base pl-8 font-display font-bold"
               />
             </div>
+          </div>
+
+          {/* Payment day */}
+          <div className="space-y-1.5">
+            <Label htmlFor="edit-day" className="text-sm font-semibold">
+              Payment due day (day of month)
+            </Label>
+            <Input
+              id="edit-day"
+              type="number"
+              inputMode="numeric"
+              step="1"
+              min="1"
+              max="31"
+              value={paymentDay}
+              onChange={(e) => setPaymentDay(e.target.value)}
+              placeholder="e.g. 15"
+              className="h-12 rounded-2xl bg-surface text-base font-display font-bold"
+            />
+            <p className="text-xs text-muted-foreground">
+              On this day each month we apply your payment (minimum + extra): the interest part is covered first and only the principal part reduces your balance.
+            </p>
           </div>
 
           {/* Remaining months */}

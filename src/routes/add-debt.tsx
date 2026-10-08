@@ -36,6 +36,7 @@ function AddDebtPage() {
   const [apr, setApr] = useState("");
   const [minPay, setMinPay] = useState("");
   const [remainingMonths, setRemainingMonths] = useState("");
+  const [paymentDay, setPaymentDay] = useState("");
   const [busy, setBusy] = useState(false);
 
   function handleCancel() {
@@ -56,6 +57,8 @@ function AddDebtPage() {
       apr: Number(apr),
       minimum_payment: Number(minPay),
       remaining_months: remainingMonths ? Number(remainingMonths) : null,
+      payment_day: paymentDay ? Number(paymentDay) : null,
+      last_processed_due: new Date().toISOString().slice(0, 10),
     });
     setBusy(false);
     if (error) {
@@ -74,7 +77,8 @@ function AddDebtPage() {
     Number(balance) > 0 &&
     apr !== "" &&
     minPay !== "" &&
-    Number(minPay) > 0;
+    Number(minPay) > 0 &&
+    (paymentDay === "" || (Number(paymentDay) >= 1 && Number(paymentDay) <= 31));
 
   return (
     <div className="min-h-screen bg-background">
@@ -183,6 +187,28 @@ function AddDebtPage() {
             </div>
             <p className="text-xs text-muted-foreground">
               The smallest amount you must pay each month.
+            </p>
+          </div>
+
+          {/* Payment day */}
+          <div className="space-y-1.5">
+            <Label htmlFor="debt-day" className="text-sm font-semibold">
+              Payment due day (day of month)
+            </Label>
+            <Input
+              id="debt-day"
+              type="number"
+              inputMode="numeric"
+              step="1"
+              min="1"
+              max="31"
+              value={paymentDay}
+              onChange={(e) => setPaymentDay(e.target.value)}
+              placeholder="e.g. 15"
+              className="h-12 rounded-2xl bg-surface text-base font-display font-bold"
+            />
+            <p className="text-xs text-muted-foreground">
+              On this day each month we apply your payment (minimum + extra): the interest part is covered first and only the principal part reduces your balance.
             </p>
           </div>
 
