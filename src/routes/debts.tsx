@@ -49,6 +49,7 @@ type DebtRow = {
   starting_balance: number;
   is_paid_off: boolean;
   extra_payment: number;
+  payment_day: number | null;
 };
 
 function DebtsPage() {
@@ -65,6 +66,7 @@ function DebtsPage() {
   async function load() {
     if (!user) return;
     setLoading(true);
+    await supabase.rpc("process_due_payments");
     const { data, error } = await supabase
       .from("debts")
       .select("*")
@@ -136,7 +138,7 @@ function DebtsPage() {
                   <div>
                     <h3 className="font-display font-bold text-lg leading-tight">{d.name}</h3>
                     <p className="text-xs text-muted-foreground mt-1">
-                      {d.apr}% APR · Min {formatMoney(d.minimum_payment)}/mo
+                      {d.apr}% APR · Min {formatMoney(d.minimum_payment)}/mo{d.payment_day ? ` · Due day ${d.payment_day}` : ""}
                     </p>
                   </div>
                   <div className="flex items-center gap-1">
