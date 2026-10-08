@@ -8,6 +8,13 @@
       "when": 1791478136999,
       "tag": "0000_debt_payment_day",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791478556852,
+      "tag": "0001_scheduled_payment_minimum_only",
+      "breakpoints": true
     }
   ]
 }
